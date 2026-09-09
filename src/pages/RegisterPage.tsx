@@ -5,6 +5,7 @@ import { useUiStore } from '../stores/uiStore';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardFooter } from '../components/ui/card';
+import { SocialAuthButtons } from '../components/common/SocialAuthButtons';
 
 export function RegisterPage() {
   const { register, error, clearError, loading } = useAuthStore();
@@ -34,7 +35,7 @@ export function RegisterPage() {
       return;
     }
 
-    const success = await register(email, password, displayName);
+    const success = await register(displayName, email, password);
     if (success) {
       navigate('onboarding');
     }
@@ -64,8 +65,19 @@ export function RegisterPage() {
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
         <Card className="border border-slate-200/80 dark:border-slate-800 rounded-3xl bg-white dark:bg-slate-900 shadow-xl overflow-hidden">
+          <div className="pt-8 px-6 sm:px-8">
+            <SocialAuthButtons actionLabel="Sign up" />
+            <div className="flex items-center gap-3 my-5">
+              <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+              <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                or with email
+              </span>
+              <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4 pt-8 px-6 sm:px-8">
+            <CardContent className="space-y-4 pt-0 px-6 sm:px-8">
               {(error || clientError) && (
                 <div className="rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 p-3.5 text-xs text-rose-700 dark:text-rose-300 font-medium">
                   {clientError || error}

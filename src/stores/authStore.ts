@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { authService, onAuthStateChange } from '../services/authService';
-import type { AuthUser, AuthSession } from '../services/authService';
+import type { AuthUser, AuthSession, OAuthProvider } from '../services/authService';
 
 interface AuthState {
   user: AuthUser | null;
@@ -12,6 +12,7 @@ interface AuthState {
   initializeAuth: () => Promise<void>;
   checkSession:   () => Promise<void>;
   login:          (email: string, pass: string) => Promise<boolean>;
+  loginWithOAuth: (provider: OAuthProvider) => Promise<boolean>;
   register:       (name: string, email: string, pass: string) => Promise<boolean>;
   logout:         () => Promise<void>;
   resetPassword:  (email: string) => Promise<boolean>;
@@ -76,6 +77,28 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       return true;
     } catch (err: unknown) {
       set({ error: err instanceof Error ? err.message : 'Login failed', loading: false });
+      return false;
+    }
+  },
+
+  // ---------------------------------------------------------------
+  // Kicks off the provider redirect. There is no user/session to set
+  // here — the browser navigates away and comes back through the
+  // normal onAuthStateChange listener once the provider redirects home.
+  loginWithOAuth: async (provider) => {
+    set({ loading: true, error: null });
+    try {
+      const { error } = await authService.loginWithOAuth(provider, '/');
+      if (error) {
+        set({ error, loading: false });
+        return false;
+      }
+      return true;
+    } catch (err: unknown) {
+      set({
+        error: err instanceof Error ? err.message : `${provider} sign-in failed`,
+        loading: false,
+      });
       return false;
     }
   },

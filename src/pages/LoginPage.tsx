@@ -5,6 +5,7 @@ import { useUiStore } from '../stores/uiStore';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardFooter } from '../components/ui/card';
+import { SocialAuthButtons } from '../components/common/SocialAuthButtons';
 
 export function LoginPage() {
   const { login, error, clearError, loading } = useAuthStore();
@@ -75,8 +76,19 @@ export function LoginPage() {
             </Button>
           </div>
 
+          <div className="pt-6 px-6 sm:px-8">
+            <SocialAuthButtons actionLabel="Sign in" />
+            <div className="flex items-center gap-3 my-5">
+              <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+              <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                or with email
+              </span>
+              <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4 pt-6 px-6 sm:px-8">
+            <CardContent className="space-y-4 pt-0 px-6 sm:px-8">
               {error && (
                 <div className="rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 p-3.5 text-xs text-rose-700 dark:text-rose-300 font-medium">
                   {error}

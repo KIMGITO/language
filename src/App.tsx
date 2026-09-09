@@ -3,22 +3,49 @@ import { useAuthStore } from './stores/authStore';
 import { useProfileStore } from './stores/profileStore';
 import { useUiStore } from './stores/uiStore';
 import { AppLayout } from './components/layout/AppLayout';
-
-// Pages
-import { LandingPage } from './pages/LandingPage';
-import { LoginPage } from './pages/LoginPage';
-import { RegisterPage } from './pages/RegisterPage';
-import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
-import { OnboardingPage } from './pages/OnboardingPage';
-import { HomePage } from './pages/HomePage';
-import { DiscoverPage } from './pages/DiscoverPage';
-import { MatchesPage } from './pages/MatchesPage';
-import { MessagesPage } from './pages/MessagesPage';
-import { ProfilePage } from './pages/ProfilePage';
-import { UserProfilePage } from './pages/UserProfilePage';
-import { SettingsPage } from './pages/SettingsPage';
+import { LoadingState } from './components/common/LoadingState';
 import { ReportDialog } from './components/safety/ReportDialog';
 import { BlockDialog } from './components/safety/BlockDialog';
+
+// Pages — lazy-loaded so each route ships its own chunk instead of one
+// monolithic bundle. Named exports need a small `.then()` remap since
+// React.lazy only accepts a default export.
+const LandingPage = React.lazy(() =>
+  import('./pages/LandingPage').then((m) => ({ default: m.LandingPage }))
+);
+const LoginPage = React.lazy(() =>
+  import('./pages/LoginPage').then((m) => ({ default: m.LoginPage }))
+);
+const RegisterPage = React.lazy(() =>
+  import('./pages/RegisterPage').then((m) => ({ default: m.RegisterPage }))
+);
+const ForgotPasswordPage = React.lazy(() =>
+  import('./pages/ForgotPasswordPage').then((m) => ({ default: m.ForgotPasswordPage }))
+);
+const OnboardingPage = React.lazy(() =>
+  import('./pages/OnboardingPage').then((m) => ({ default: m.OnboardingPage }))
+);
+const HomePage = React.lazy(() =>
+  import('./pages/HomePage').then((m) => ({ default: m.HomePage }))
+);
+const DiscoverPage = React.lazy(() =>
+  import('./pages/DiscoverPage').then((m) => ({ default: m.DiscoverPage }))
+);
+const MatchesPage = React.lazy(() =>
+  import('./pages/MatchesPage').then((m) => ({ default: m.MatchesPage }))
+);
+const MessagesPage = React.lazy(() =>
+  import('./pages/MessagesPage').then((m) => ({ default: m.MessagesPage }))
+);
+const ProfilePage = React.lazy(() =>
+  import('./pages/ProfilePage').then((m) => ({ default: m.ProfilePage }))
+);
+const UserProfilePage = React.lazy(() =>
+  import('./pages/UserProfilePage').then((m) => ({ default: m.UserProfilePage }))
+);
+const SettingsPage = React.lazy(() =>
+  import('./pages/SettingsPage').then((m) => ({ default: m.SettingsPage }))
+);
 
 export default function App() {
   const { user, loading: authLoading, checkSession } = useAuthStore();
@@ -109,7 +136,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-stone-50 font-sans selection:bg-teal-100 selection:text-teal-900">
-      {renderCurrentPage()}
+      <React.Suspense fallback={<LoadingState message="Loading..." className="min-h-screen" />}>
+        {renderCurrentPage()}
+      </React.Suspense>
       <ReportDialog />
       <BlockDialog />
     </div>

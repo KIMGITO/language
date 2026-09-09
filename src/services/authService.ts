@@ -2,6 +2,8 @@ import { supabase, isSupabaseConfigured } from './supabase';
 import { MOCK_CURRENT_USER } from '../data/mockData';
 import type { Profile } from '../types';
 
+export type OAuthProvider = 'google' | 'apple' | 'facebook';
+
 export interface AuthUser {
   id: string;
   email: string;
@@ -164,6 +166,39 @@ export const authService = {
       session: { access_token: 'new-user-mock-token' },
       error: null,
     };
+  },
+
+  // ---------------------------------------------------------------
+  // Sign in with a social provider (Google, Apple, Facebook)
+  // Redirects the browser to the provider, then back to `redirectPath`.
+  // Session is picked up automatically by supabase-js (detectSessionInUrl)
+  // and surfaced through onAuthStateChange — no further handling needed.
+  // ---------------------------------------------------------------
+  async loginWithOAuth(
+    provider: OAuthProvider,
+    redirectPath: string = '/'
+  ): Promise<{ error: string | null }> {
+    if (!isSupabaseConfigured) {
+      return {
+        error: `Social sign-in with ${provider} requires Supabase to be configured for this project.`,
+      };
+    }
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}${redirectPath}`,
+          ...(provider === 'google'
+            ? { queryParams: { access_type: 'offline', prompt: 'consent' } }
+            : {}),
+        },
+      });
+      if (error) return { error: error.message };
+      // Browser is being redirected to the provider — nothing else to do.
+      return { error: null };
+    } catch (err: unknown) {
+      return { error: err instanceof Error ? err.message : `${provider} sign-in failed` };
+    }
   },
 
   // ---------------------------------------------------------------
