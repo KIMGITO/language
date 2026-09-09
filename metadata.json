@@ -1,0 +1,6 @@
+{
+  "name": "Language Exchange",
+  "description": "A modern language exchange platform to discover partners, match by languages and interests, and practice through text conversations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
