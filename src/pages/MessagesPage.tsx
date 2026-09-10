@@ -8,7 +8,6 @@ import { ChatSpaceRail } from '../components/chat/ChatSpaceRail';
 import { ChatConversationList } from '../components/chat/ChatConversationList';
 import { ChatMessageCanvas } from '../components/chat/ChatMessageCanvas';
 import { ChatRightPanel } from '../components/chat/ChatRightPanel';
-import { PracticeCallModal } from '../components/chat/PracticeCallModal';
 import { TopicPickerModal } from '../components/topics/TopicPickerModal';
 import { EmptyConversationState } from '../components/chat/EmptyConversationState';
 import { cn } from '../lib/utils';
@@ -32,8 +31,6 @@ export function MessagesPage() {
   const [topicModalOpen, setTopicModalOpen] = React.useState<boolean>(false);
   const [selectedTopic, setSelectedTopic] = React.useState<ConversationTopic | null>(null);
   const [mobileShowChat, setMobileShowChat] = React.useState<boolean>(false);
-  const [callModalOpen, setCallModalOpen] = React.useState<boolean>(false);
-  const [callType, setCallType] = React.useState<'audio' | 'video'>('video');
 
   React.useEffect(() => {
     loadConversations();
@@ -68,11 +65,6 @@ export function MessagesPage() {
   const handleSelectTopic = (topic: ConversationTopic) => {
     setSelectedTopic(topic);
     setTopicModalOpen(false);
-  };
-
-  const handleStartCall = (type: 'audio' | 'video') => {
-    setCallType(type);
-    setCallModalOpen(true);
   };
 
   const handleSelectSpace = (spaceId: string) => {
@@ -131,7 +123,6 @@ export function MessagesPage() {
             onOpenTopics={() => setTopicModalOpen(true)}
             selectedTopic={selectedTopic}
             onClearTopic={() => setSelectedTopic(null)}
-            onStartCall={handleStartCall}
             onToggleRightPanel={() => setIsRightPanelOpen(!isRightPanelOpen)}
             isRightPanelOpen={isRightPanelOpen}
             onBackToConversations={() => setMobileShowChat(false)}
@@ -171,14 +162,6 @@ export function MessagesPage() {
           />
         )}
       </div>
-
-      {/* Interactive Practice Call Modal */}
-      <PracticeCallModal
-        open={callModalOpen}
-        onClose={() => setCallModalOpen(false)}
-        partner={partner}
-        initialType={callType}
-      />
 
       {/* Topic Picker Modal */}
       <TopicPickerModal

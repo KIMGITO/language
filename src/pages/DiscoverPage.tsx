@@ -91,11 +91,12 @@ export function DiscoverPage() {
       {/* Partner Cards Grid */}
       {filteredMatches.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredMatches.map((match) => (
+          {filteredMatches.map((match, i) => (
             <PartnerCard
               key={match.id}
               partner={match.partner}
               match={match}
+              index={i}
               onViewProfile={(id) => navigate('user-profile', { userId: id })}
               onStartChat={handleStartChatWithPartner}
             />

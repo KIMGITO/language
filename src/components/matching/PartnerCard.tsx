@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { MapPin, MessageSquare, User, MoreVertical, ShieldAlert, Ban, ArrowLeftRight, HeartHandshake, Sparkles } from 'lucide-react';
 import { Profile, PartnerMatch } from '../../types';
 import { PartnerAvatar } from '../common/PartnerAvatar';
@@ -20,6 +21,8 @@ interface PartnerCardProps {
   onConnect?: (partnerId: string) => void;
   connected?: boolean;
   className?: string;
+  /** Position within its grid — used to stagger the entrance animation. */
+  index?: number;
 }
 
 export function PartnerCard({
@@ -29,6 +32,7 @@ export function PartnerCard({
   onStartChat,
   connected = false,
   className,
+  index = 0,
 }: PartnerCardProps) {
   const { openReportDialog, openBlockDialog } = useSafetyStore();
 
@@ -54,9 +58,13 @@ export function PartnerCard({
   const matchPercent = match?.compatibility_score ?? 90 + Math.floor((partner.display_name.charCodeAt(0) % 10));
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: Math.min(index, 8) * 0.06, ease: 'easeOut' }}
+      whileHover={{ y: -4 }}
       className={cn(
-        'group relative rounded-2xl border border-slate-200/80 bg-white shadow-sm hover:shadow-xl hover:border-indigo-200 transition-all duration-300 flex flex-col justify-between overflow-hidden',
+        'group relative rounded-2xl border border-slate-200/80 bg-white shadow-sm hover:shadow-xl hover:border-indigo-200 transition-[box-shadow,border-color] duration-300 flex flex-col justify-between overflow-hidden',
         className
       )}
     >
@@ -198,17 +206,19 @@ export function PartnerCard({
           View Profile
         </Button>
 
-        <Button
-          variant="gradient"
-          size="sm"
-          onClick={() => onStartChat(partner)}
-          className="flex-1 text-xs gap-1.5 rounded-xl"
-        >
-          <MessageSquare className="h-3.5 w-3.5" />
-          <span>{connected ? 'Chat' : 'Connect'}</span>
-        </Button>
+        <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.96 }} className="flex-1">
+          <Button
+            variant="gradient"
+            size="sm"
+            onClick={() => onStartChat(partner)}
+            className="w-full text-xs gap-1.5 rounded-xl"
+          >
+            <MessageSquare className="h-3.5 w-3.5" />
+            <span>{connected ? 'Chat' : 'Connect'}</span>
+          </Button>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

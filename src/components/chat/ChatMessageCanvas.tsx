@@ -1,7 +1,5 @@
 import React from 'react';
 import {
-  Phone,
-  Video,
   Search,
   Users,
   Paperclip,
@@ -18,6 +16,7 @@ import {
   Bell,
   Sparkles,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Conversation, Message, Profile, ConversationTopic } from '../../types';
 import { Avatar } from '../ui/avatar';
 import { cn } from '../../lib/utils';
@@ -31,7 +30,6 @@ interface ChatMessageCanvasProps {
   onOpenTopics: () => void;
   selectedTopic: ConversationTopic | null;
   onClearTopic: () => void;
-  onStartCall: (type: 'audio' | 'video') => void;
   onToggleRightPanel: () => void;
   isRightPanelOpen: boolean;
   onBackToConversations?: () => void;
@@ -47,7 +45,6 @@ export function ChatMessageCanvas({
   onOpenTopics,
   selectedTopic,
   onClearTopic,
-  onStartCall,
   onToggleRightPanel,
   isRightPanelOpen,
   onBackToConversations,
@@ -174,27 +171,6 @@ export function ChatMessageCanvas({
 
           {/* Quick action buttons */}
           <div className="flex items-center gap-1.5 pl-2 border-l border-slate-800/80">
-            {/* Audio call button */}
-            <button
-              type="button"
-              onClick={() => onStartCall('audio')}
-              title="Start audio call"
-              className="h-9 px-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 flex items-center justify-center font-bold text-xs shadow-sm transition-transform hover:scale-105 active:scale-95 cursor-pointer border-0"
-            >
-              <Phone className="h-3.5 w-3.5 fill-slate-950 text-slate-950 mr-1.5" />
-              <span>Call</span>
-            </button>
-
-            {/* Video button */}
-            <button
-              type="button"
-              onClick={() => onStartCall('video')}
-              title="Start video call"
-              className="h-9 w-9 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white flex items-center justify-center transition-all cursor-pointer border border-slate-800"
-            >
-              <Video className="h-4 w-4" />
-            </button>
-
             {/* Search toggle for mobile */}
             <button
               type="button"
@@ -311,99 +287,79 @@ export function ChatMessageCanvas({
         </div>
 
         {/* Messages List */}
-        {displayedMessages.map((msg) => {
-          const isSelf = msg.sender_id === currentUserId;
-          const senderName = isSelf
-            ? 'You'
-            : partner?.display_name || 'Partner';
-          const senderAvatar = isSelf
-            ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'
-            : partner?.avatar_url || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80';
+        <AnimatePresence initial={false}>
+          {displayedMessages.map((msg) => {
+            const isSelf = msg.sender_id === currentUserId;
+            const senderName = isSelf
+              ? 'You'
+              : partner?.display_name || 'Partner';
+            const senderAvatar = isSelf
+              ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'
+              : partner?.avatar_url || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80';
 
-          return (
-            <div
-              key={msg.id}
-              className="flex items-start gap-3 group py-1.5 hover:bg-slate-900/30 px-2 rounded-2xl transition-colors"
-            >
-              <Avatar
-                src={senderAvatar}
-                fallback={senderName.charAt(0)}
-                size="md"
-                className="mt-0.5 border border-slate-700 shrink-0"
-              />
+            return (
+              <motion.div
+                key={msg.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                className="flex items-start gap-3 group py-1.5 hover:bg-slate-900/30 px-2 rounded-2xl transition-colors"
+              >
+                <Avatar
+                  src={senderAvatar}
+                  fallback={senderName.charAt(0)}
+                  size="md"
+                  className="mt-0.5 border border-slate-700 shrink-0"
+                />
 
-              <div className="flex-1 min-w-0">
-                <div className="flex items-baseline justify-between gap-2">
-                  <span
-                    className={cn(
-                      'font-heading font-bold text-xs',
-                      isSelf ? 'text-indigo-400' : 'text-slate-200'
-                    )}
-                  >
-                    {senderName}
-                  </span>
-                  <span className="text-[10px] text-slate-400 font-mono">
-                    {formatTime(msg.created_at)}
-                  </span>
-                </div>
-
-                {msg.is_topic_starter && msg.topic_title && (
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-bold rounded-lg mt-1">
-                    <BookOpen className="h-3 w-3" />
-                    <span>Topic: {msg.topic_title}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span
+                      className={cn(
+                        'font-heading font-bold text-xs',
+                        isSelf ? 'text-indigo-400' : 'text-slate-200'
+                      )}
+                    >
+                      {senderName}
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">
+                      {formatTime(msg.created_at)}
+                    </span>
                   </div>
-                )}
 
-                <p className="text-xs sm:text-sm text-slate-200 leading-relaxed mt-1 break-words">
-                  {msg.content.split(' ').map((word, i) => {
-                    if (word.startsWith('@')) {
-                      return (
-                        <span
-                          key={i}
-                          className="text-amber-400 font-bold bg-amber-500/10 px-1 py-0.5 rounded mx-0.5"
-                        >
-                          {word}{' '}
-                        </span>
-                      );
-                    }
-                    return word + ' ';
-                  })}
-                </p>
-              </div>
-            </div>
-          );
-        })}
+                  {msg.is_topic_starter && msg.topic_title && (
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-bold rounded-lg mt-1">
+                      <BookOpen className="h-3 w-3" />
+                      <span>Topic: {msg.topic_title}</span>
+                    </div>
+                  )}
+
+                  <p className="text-xs sm:text-sm text-slate-200 leading-relaxed mt-1 break-words">
+                    {msg.content.split(' ').map((word, i) => {
+                      if (word.startsWith('@')) {
+                        return (
+                          <span
+                            key={i}
+                            className="text-amber-400 font-bold bg-amber-500/10 px-1 py-0.5 rounded mx-0.5"
+                          >
+                            {word}{' '}
+                          </span>
+                        );
+                      }
+                      return word + ' ';
+                    })}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
 
         {/* Date Divider 2 */}
         <div className="flex items-center justify-center my-4">
           <div className="px-3.5 py-1 bg-slate-900/80 border border-slate-800 text-slate-400 text-[11px] font-medium tracking-wider rounded-full">
             Today
           </div>
-        </div>
-
-        {/* Video Call Event banner */}
-        <div className="flex items-center justify-between p-3.5 bg-gradient-to-r from-slate-900 to-indigo-950/40 border border-slate-800 rounded-2xl shadow-sm my-2">
-          <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-indigo-600/30 flex items-center justify-center text-indigo-400 border border-indigo-500/40">
-              <Video className="h-4 w-4" />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-white leading-tight">
-                {partner?.display_name || 'Richard Wilson'} started a practice video call
-              </p>
-              <p className="text-[10px] text-slate-400 mt-0.5">
-                Swahili & English live conversation session
-              </p>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => onStartCall('video')}
-            className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition-all shadow-md cursor-pointer border-0"
-          >
-            Join Call
-          </button>
         </div>
 
         <div ref={messagesEndRef} />

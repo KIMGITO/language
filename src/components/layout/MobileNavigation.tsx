@@ -1,46 +1,19 @@
 import React from 'react';
-import {
-  Home,
-  Compass,
-  Users,
-  MessageSquare,
-  User,
-  Settings,
-  LogOut,
-} from 'lucide-react';
-import { useUiStore, AppRoute } from '../../stores/uiStore';
+import { Settings, LogOut } from 'lucide-react';
+import { useUiStore } from '../../stores/uiStore';
 import { useAuthStore } from '../../stores/authStore';
 import { useProfileStore } from '../../stores/profileStore';
-import { useChatStore } from '../../stores/chatStore';
 import { Sheet } from '../ui/sheet';
 import { Avatar } from '../ui/avatar';
-import { UnreadBadge } from '../common/UnreadBadge';
 import { cn } from '../../lib/utils';
 
+// Primary navigation (Home/Discover/Matches/Messages/Profile) lives in the
+// persistent mobile tab bar now. This drawer just covers the leftover
+// secondary destination (Settings) plus logout.
 export function MobileNavigation() {
   const { mobileNavOpen, setMobileNavOpen, currentRoute, navigate } = useUiStore();
   const { logout } = useAuthStore();
   const { currentProfile } = useProfileStore();
-  const { conversations } = useChatStore();
-
-  const totalUnreadMessages = conversations.reduce(
-    (acc, curr) => acc + (curr.unread_count || 0),
-    0
-  );
-
-  const navItems: { route: AppRoute; label: string; icon: React.ReactNode; badge?: number }[] = [
-    { route: 'home', label: 'Home', icon: <Home className="h-5 w-5" /> },
-    { route: 'discover', label: 'Discover', icon: <Compass className="h-5 w-5" /> },
-    { route: 'matches', label: 'Matches', icon: <Users className="h-5 w-5" /> },
-    {
-      route: 'messages',
-      label: 'Messages',
-      icon: <MessageSquare className="h-5 w-5" />,
-      badge: totalUnreadMessages,
-    },
-    { route: 'profile', label: 'Profile', icon: <User className="h-5 w-5" /> },
-    { route: 'settings', label: 'Settings', icon: <Settings className="h-5 w-5" /> },
-  ];
 
   return (
     <Sheet
@@ -78,38 +51,24 @@ export function MobileNavigation() {
             </div>
           )}
 
-          {/* Navigation Links */}
+          {/* Secondary links */}
           <nav className="space-y-1.5">
-            {navItems.map((item) => {
-              const isActive = currentRoute === item.route;
-              return (
-                <button
-                  key={item.route}
-                  type="button"
-                  onClick={() => {
-                    navigate(item.route);
-                    setMobileNavOpen(false);
-                  }}
-                  className={cn(
-                    'w-full flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition-all text-left cursor-pointer',
-                    isActive
-                      ? 'bg-indigo-600 text-white font-bold shadow-sm shadow-indigo-500/25'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                  )}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className={isActive ? 'text-white' : 'text-slate-400'}>
-                      {item.icon}
-                    </span>
-                    <span>{item.label}</span>
-                  </div>
-
-                  {item.badge !== undefined && item.badge > 0 && (
-                    <UnreadBadge count={item.badge} />
-                  )}
-                </button>
-              );
-            })}
+            <button
+              type="button"
+              onClick={() => {
+                navigate('settings');
+                setMobileNavOpen(false);
+              }}
+              className={cn(
+                'w-full flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all text-left cursor-pointer',
+                currentRoute === 'settings'
+                  ? 'bg-indigo-600 text-white font-bold shadow-sm shadow-indigo-500/25'
+                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+              )}
+            >
+              <Settings className={cn('h-5 w-5', currentRoute === 'settings' ? 'text-white' : 'text-slate-400')} />
+              <span>Settings</span>
+            </button>
           </nav>
         </div>
 

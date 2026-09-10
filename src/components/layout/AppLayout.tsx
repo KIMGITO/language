@@ -2,9 +2,12 @@ import React from 'react';
 import { AppSidebar } from './AppSidebar';
 import { TopNavigation } from './TopNavigation';
 import { MobileNavigation } from './MobileNavigation';
+import { MobileTabBar } from './MobileTabBar';
 import { ReportDialog } from '../safety/ReportDialog';
 import { BlockUserDialog } from '../safety/BlockUserDialog';
 import { useSafetyStore } from '../../stores/safetyStore';
+import { useUiStore } from '../../stores/uiStore';
+import { cn } from '../../lib/utils';
 import { CheckCircle2, X } from 'lucide-react';
 
 interface AppLayoutProps {
@@ -13,6 +16,8 @@ interface AppLayoutProps {
 
 export function AppLayout({ children }: AppLayoutProps) {
   const { toastMessage, clearToast } = useSafetyStore();
+  const { currentRoute } = useUiStore();
+  const isMessages = currentRoute === 'messages';
 
   React.useEffect(() => {
     if (toastMessage) {
@@ -28,7 +33,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Persistent Desktop Sidebar */}
       <AppSidebar />
 
-      {/* Mobile Drawer Navigation */}
+      {/* Mobile Drawer Navigation (secondary destinations: settings, logout) */}
       <MobileNavigation />
 
       {/* Main Content Area */}
@@ -51,10 +56,13 @@ export function AppLayout({ children }: AppLayoutProps) {
           </div>
         )}
 
-        <main className="flex-1 pb-16 md:pb-8">
+        <main className={cn('flex-1', isMessages ? '' : 'pb-16 md:pb-8')}>
           {children}
         </main>
       </div>
+
+      {/* Persistent Mobile Bottom Tab Bar (hidden inside an open chat) */}
+      <MobileTabBar />
 
       {/* Global Safety Dialogs */}
       <ReportDialog />

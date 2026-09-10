@@ -79,11 +79,12 @@ export function MatchesPage() {
         {/* Tab: All */}
         <TabsContent value="all">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {matches.map((match) => (
+            {matches.map((match, i) => (
               <PartnerCard
                 key={match.id}
                 partner={match.partner}
                 match={match}
+                index={i}
                 connected={connectedPartnerIds.has(match.partner.id)}
                 onViewProfile={(id) => navigate('user-profile', { userId: id })}
                 onStartChat={handleStartChatWithPartner}
@@ -96,11 +97,12 @@ export function MatchesPage() {
         <TabsContent value="reciprocal">
           {reciprocalMatches.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {reciprocalMatches.map((match) => (
+              {reciprocalMatches.map((match, i) => (
                 <PartnerCard
                   key={match.id}
                   partner={match.partner}
                   match={match}
+                  index={i}
                   connected={connectedPartnerIds.has(match.partner.id)}
                   onViewProfile={(id) => navigate('user-profile', { userId: id })}
                   onStartChat={handleStartChatWithPartner}
@@ -120,11 +122,12 @@ export function MatchesPage() {
         <TabsContent value="fluent">
           {fluentMatches.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {fluentMatches.map((match) => (
+              {fluentMatches.map((match, i) => (
                 <PartnerCard
                   key={match.id}
                   partner={match.partner}
                   match={match}
+                  index={i}
                   connected={connectedPartnerIds.has(match.partner.id)}
                   onViewProfile={(id) => navigate('user-profile', { userId: id })}
                   onStartChat={handleStartChatWithPartner}
@@ -144,11 +147,12 @@ export function MatchesPage() {
         <TabsContent value="helping">
           {canHelpMatches.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {canHelpMatches.map((match) => (
+              {canHelpMatches.map((match, i) => (
                 <PartnerCard
                   key={match.id}
                   partner={match.partner}
                   match={match}
+                  index={i}
                   connected={connectedPartnerIds.has(match.partner.id)}
                   onViewProfile={(id) => navigate('user-profile', { userId: id })}
                   onStartChat={handleStartChatWithPartner}
@@ -168,11 +172,12 @@ export function MatchesPage() {
         <TabsContent value="connected">
           {connectedMatches.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {connectedMatches.map((match) => (
+              {connectedMatches.map((match, i) => (
                 <PartnerCard
                   key={match.id}
                   partner={match.partner}
                   match={match}
+                  index={i}
                   connected={true}
                   onViewProfile={(id) => navigate('user-profile', { userId: id })}
                   onStartChat={handleStartChatWithPartner}

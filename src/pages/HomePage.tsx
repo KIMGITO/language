@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import {
   Compass,
   MessageSquare,
@@ -51,7 +52,7 @@ export function HomePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-200">
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 pb-6 border-b border-slate-200/80">
-        <div>
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
          
           <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
             Welcome back, {currentProfile?.display_name?.split(' ')[0] || 'Learner'} 
@@ -59,9 +60,14 @@ export function HomePage() {
           <p className="text-sm text-slate-500 mt-1.5">
             Connect with native speakers, discover topics, and boost your language fluency.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="flex items-center gap-3 shrink-0"
+        >
           <Button
             variant="gradient"
             size="md"
@@ -71,7 +77,7 @@ export function HomePage() {
             <Compass className="h-4 w-4" />
             <span>Discover Partners</span>
           </Button>
-        </div>
+        </motion.div>
       </div>
 
       {/* Main Content Layout */}
@@ -125,11 +131,12 @@ export function HomePage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              {matches.slice(0, 2).map((match) => (
+              {matches.slice(0, 2).map((match, i) => (
                 <PartnerCard
                   key={match.id}
                   partner={match.partner}
                   match={match}
+                  index={i}
                   onViewProfile={(id) => navigate('user-profile', { userId: id })}
                   onStartChat={handleStartChatWithPartner}
                 />
@@ -182,14 +189,18 @@ export function HomePage() {
             </div>
 
             <div className="space-y-2">
-              {conversations.slice(0, 4).map((convo) => {
+              {conversations.slice(0, 4).map((convo, i) => {
                 const partner =
                   convo.members.find((m) => m.id !== currentProfile?.id) || convo.members[0];
                 return (
-                  <div
+                  <motion.div
                     key={convo.id}
+                    initial={{ opacity: 0, x: 12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: i * 0.06 }}
+                    whileHover={{ x: 2 }}
                     onClick={() => navigate('messages', { conversationId: convo.id })}
-                    className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-all cursor-pointer group border border-slate-100 hover:border-slate-200 shadow-2xs"
+                    className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group border border-slate-100 hover:border-slate-200 shadow-2xs"
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <Avatar
@@ -211,7 +222,7 @@ export function HomePage() {
                     {convo.unread_count > 0 && (
                       <UnreadBadge count={convo.unread_count} />
                     )}
-                  </div>
+                  </motion.div>
                 );
               })}
 

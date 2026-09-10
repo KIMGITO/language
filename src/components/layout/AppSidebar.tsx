@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import {
   Home,
   Compass,
@@ -87,17 +88,27 @@ export function AppSidebar() {
                 type="button"
                 onClick={() => navigate(item.route)}
                 className={cn(
-                  'w-full flex items-center font-semibold text-sm transition-all duration-150 cursor-pointer group relative',
+                  'w-full flex items-center font-semibold text-sm transition-colors duration-150 cursor-pointer group relative',
                   sidebarCollapsed
                     ? 'justify-center p-3 rounded-2xl'
                     : 'justify-between px-3.5 py-2.5 rounded-xl',
                   isActive
-                    ? 'bg-indigo-600 text-white font-bold shadow-sm shadow-indigo-500/20'
+                    ? 'text-white font-bold'
                     : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
                 )}
                 title={sidebarCollapsed ? item.label : undefined}
               >
-                <div className="flex items-center gap-3">
+                {isActive && (
+                  <motion.div
+                    layoutId="sidebar-active-pill"
+                    className={cn(
+                      'absolute inset-0 bg-indigo-600 shadow-sm shadow-indigo-500/20',
+                      sidebarCollapsed ? 'rounded-2xl' : 'rounded-xl'
+                    )}
+                    transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                  />
+                )}
+                <div className="relative z-10 flex items-center gap-3">
                   <span
                     className={cn(
                       'transition-colors',
@@ -110,7 +121,7 @@ export function AppSidebar() {
                 </div>
 
                 {item.badge !== undefined && item.badge > 0 && (
-                  <div>
+                  <div className="relative z-10">
                     <UnreadBadge count={item.badge} />
                   </div>
                 )}
