@@ -154,8 +154,8 @@ export function MatchFilterBar({
                 Country
               </label>
               <Select
-                value={filters.speakerLanguage}
-                onChange={(e) => onFilterChange('speakerLanguage', e.target.value)}
+                value={filters.country}
+                onChange={(e) => onFilterChange('country', e.target.value)}
                 className="h-9 text-xs rounded-xl"
               >
                 {countries.map((c) => (

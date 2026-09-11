@@ -27,6 +27,7 @@ const defaultFilters: MatchFilters = {
   proficiency: 'all',
   interest: 'all',
   availability: 'all',
+  country: 'all',
   searchQuery: '',
 };
 
@@ -105,7 +106,8 @@ export const useMatchingStore = create<MatchingState>((set, get) => ({
   },
 
   skipPartner: async (partnerId: string) => {
-    await matchingService.skipPartner(partnerId);
+    const currentProfile = useProfileStore.getState().currentProfile;
+    await matchingService.skipPartner(currentProfile?.id || 'user-alex-demo', partnerId);
     set((state) => ({
       discoverList: state.discoverList.filter((m) => m.matched_user_id !== partnerId),
     }));

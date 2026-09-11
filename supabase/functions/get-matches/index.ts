@@ -39,17 +39,23 @@ serve(async (req: Request) => {
       speaker_language_id = null,
       proficiency = null,
       search_query = null,
+      interest_id = null,
+      availability = null,
+      country = null,
     } = body;
 
     // Call the secure SQL function
     const { data, error } = await supabase.rpc('get_discovery_partners', {
-      p_user_id:             user.id,
-      p_limit:               limit,
-      p_offset:              offset,
+      p_user_id:              user.id,
+      p_limit:                limit,
+      p_offset:               offset,
       p_practice_language_id: practice_language_id,
       p_speaker_language_id:  speaker_language_id,
       p_proficiency:          proficiency,
       p_search_query:         search_query,
+      p_interest_id:          interest_id,
+      p_availability:         availability,
+      p_country:              country,
     });
 
     if (error) throw error;
@@ -85,15 +91,25 @@ serve(async (req: Request) => {
       const nativeLanguages = langs.filter((l: any) => l.type === 'native');
       const learningLanguages = langs.filter((l: any) => l.type === 'learning');
 
+      // Build reasons from the real signals the SQL function computed —
+      // ordered roughly by how strong a signal each one is.
       const reasons: string[] = [];
       if (p.match_type === 'mutual_exchange') {
         reasons.push('You can help each other practice');
-        if (nativeLanguages[0]) reasons.push(`Speaks ${nativeLanguages[0].language?.name} natively`);
-      } else if (p.match_type === 'fluent_partner') {
-        if (nativeLanguages[0]) reasons.push(`Speaks ${nativeLanguages[0].language?.name} natively`);
-      } else if (p.match_type === 'can_help') {
-        if (learningLanguages[0]) reasons.push(`Learning ${learningLanguages[0].language?.name}`);
+      } else if (p.match_type === 'fluent_partner' && nativeLanguages[0]) {
+        reasons.push(`Speaks ${nativeLanguages[0].language?.name} natively`);
+      } else if (p.match_type === 'can_help' && learningLanguages[0]) {
+        reasons.push(`Learning ${learningLanguages[0].language?.name}`);
       }
+      if (p.shared_interest_count > 0) {
+        const names = (p.shared_interest_names ?? []).slice(0, 3).join(', ');
+        reasons.push(
+          `${p.shared_interest_count} shared interest${p.shared_interest_count > 1 ? 's' : ''}: ${names}`
+        );
+      }
+      if (p.is_online) reasons.push('Online right now');
+      if (p.open_to_help) reasons.push('Open to helping others learn');
+      if (reasons.length === 0) reasons.push('Community language learner');
 
       return {
         id:                    `match-${p.id}`,
@@ -102,7 +118,8 @@ serve(async (req: Request) => {
         compatibility_score:   p.compatibility_score,
         match_type:            p.match_type,
         status:                'suggested',
-        compatibility_reasons: reasons.length ? reasons : ['Community language learner'],
+        compatibility_reasons: reasons,
+        shared_interests:      p.shared_interest_names ?? [],
         created_at:            new Date().toISOString(),
         partner: {
           id:                   p.id,

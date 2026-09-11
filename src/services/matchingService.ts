@@ -4,6 +4,86 @@ import { INITIAL_MATCHES, MOCK_PARTNERS, MOCK_CURRENT_USER } from '../data/mockD
 
 let matchesState: PartnerMatch[] = [...INITIAL_MATCHES];
 
+// ------------------------------------------------------------------
+// Mirrors the scoring in supabase/migrations/006_matching_algorithm.sql
+// (get_discovery_partners) so demo/offline mode behaves the same way as
+// the real backend. If you change the weights here, change them there too.
+//
+//   30   base
+//   +35  mutual exchange / +24 fluent partner / +15 can help
+//   +15  shared interests (3 pts each, up to 5)
+//   +5   partner is open to helping others
+//   +5   both looking for reciprocal exchange
+//   +5   partner is online right now
+//   capped at 95 — never shows a fabricated 100% match
+// ------------------------------------------------------------------
+function computeCompatibility(
+  currentProfile: Profile,
+  partner: Profile
+): {
+  score: number;
+  matchType: NonNullable<PartnerMatch['match_type']>;
+  reasons: string[];
+  sharedInterests: string[];
+} {
+  const partnerSpeaksWhatUserLearns = partner.native_languages.some((nl) =>
+    currentProfile.learning_languages.some((cll) => cll.language.id === nl.language.id)
+  );
+  const userSpeaksWhatPartnerLearns = currentProfile.native_languages.some((cnl) =>
+    partner.learning_languages.some((pll) => pll.language.id === cnl.language.id)
+  );
+
+  let matchType: NonNullable<PartnerMatch['match_type']> = 'general';
+  let languagePoints = 0;
+  const reasons: string[] = [];
+
+  if (partnerSpeaksWhatUserLearns && userSpeaksWhatPartnerLearns) {
+    matchType = 'mutual_exchange';
+    languagePoints = 35;
+    reasons.push('You can help each other practice');
+  } else if (partnerSpeaksWhatUserLearns) {
+    matchType = 'fluent_partner';
+    languagePoints = 24;
+    if (partner.native_languages[0]) {
+      reasons.push(`Speaks ${partner.native_languages[0].language.name} natively`);
+    }
+  } else if (userSpeaksWhatPartnerLearns) {
+    matchType = 'can_help';
+    languagePoints = 15;
+    if (partner.learning_languages[0]) {
+      reasons.push(`Learning ${partner.learning_languages[0].language.name}`);
+    }
+  }
+
+  const sharedInterests = (partner.interests || []).filter((i) =>
+    (currentProfile.interests || []).includes(i)
+  );
+  const interestPoints = Math.min(sharedInterests.length, 5) * 3;
+  if (sharedInterests.length > 0) {
+    reasons.push(
+      `${sharedInterests.length} shared interest${sharedInterests.length > 1 ? 's' : ''}: ${sharedInterests.slice(0, 3).join(', ')}`
+    );
+  }
+
+  const onlinePoints = partner.is_online ? 5 : 0;
+  if (partner.is_online) reasons.push('Online right now');
+
+  const helpPoints = partner.open_to_help ? 5 : 0;
+  if (partner.open_to_help) reasons.push('Open to helping others learn');
+
+  const mutualExchangePoints =
+    partner.looking_for_exchange && currentProfile.looking_for_exchange ? 5 : 0;
+
+  if (reasons.length === 0) reasons.push('Community language learner');
+
+  const score = Math.min(
+    30 + languagePoints + interestPoints + onlinePoints + helpPoints + mutualExchangePoints,
+    95
+  );
+
+  return { score, matchType, reasons, sharedInterests };
+}
+
 export const matchingService = {
   // ---------------------------------------------------------------
   // Fetch connected/saved matches for a user
@@ -93,6 +173,15 @@ export const matchingService = {
       if (filters.proficiency && filters.proficiency !== 'all') {
         body.proficiency = filters.proficiency;
       }
+      if (filters.interest && filters.interest !== 'all') {
+        body.interest_id = filters.interest;
+      }
+      if (filters.availability && filters.availability !== 'all') {
+        body.availability = filters.availability;
+      }
+      if (filters.country && filters.country !== 'all') {
+        body.country = filters.country;
+      }
       if (filters.searchQuery?.trim()) {
         body.search_query = filters.searchQuery.trim();
       }
@@ -118,6 +207,16 @@ export const matchingService = {
         )
       );
     }
+    if (filters.interest && filters.interest !== 'all') {
+      partners = partners.filter((p) => p.interests?.includes(filters.interest));
+    }
+    if (filters.country && filters.country !== 'all') {
+      partners = partners.filter((p) => p.country === filters.country);
+    }
+    if (filters.availability && filters.availability !== 'all') {
+      const needle = filters.availability.toLowerCase();
+      partners = partners.filter((p) => p.availability?.toLowerCase().includes(needle));
+    }
     if (filters.searchQuery?.trim()) {
       const q = filters.searchQuery.toLowerCase();
       partners = partners.filter(
@@ -132,27 +231,7 @@ export const matchingService = {
       const existing = matchesState.find((m) => m.matched_user_id === partner.id);
       if (existing) return existing;
 
-      let score = 70;
-      let matchType: PartnerMatch['match_type'] = 'general';
-      const reasons: string[] = [];
-
-      const partnerSpeaksWhatUserLearns = partner.native_languages.some((nl) =>
-        currentProfile.learning_languages.some((cll) => cll.language.id === nl.language.id)
-      );
-      const userSpeaksWhatPartnerLearns = currentProfile.native_languages.some((cnl) =>
-        partner.learning_languages.some((pll) => pll.language.id === cnl.language.id)
-      );
-
-      if (partnerSpeaksWhatUserLearns && userSpeaksWhatPartnerLearns) {
-        score += 26; matchType = 'mutual_exchange';
-        reasons.push('You can help each other practice');
-      } else if (partnerSpeaksWhatUserLearns) {
-        score += 18; matchType = 'fluent_partner';
-        reasons.push(`Speaks ${partner.native_languages[0]?.language.name} natively`);
-      } else if (userSpeaksWhatPartnerLearns) {
-        score += 12; matchType = 'can_help';
-        reasons.push(`Learning ${partner.learning_languages[0]?.language.name}`);
-      }
+      const { score, matchType, reasons, sharedInterests } = computeCompatibility(currentProfile, partner);
 
       return {
         id:                    `match-dyn-${partner.id}`,
@@ -160,8 +239,9 @@ export const matchingService = {
         matched_user_id:       partner.id,
         partner,
         match_type:            matchType,
-        compatibility_score:   Math.min(score, 98),
-        compatibility_reasons: reasons.length ? reasons : ['Community language learner'],
+        compatibility_score:   score,
+        compatibility_reasons: reasons,
+        shared_interests:      sharedInterests,
         status:                'suggested' as const,
         created_at:            new Date().toISOString(),
       };
@@ -171,7 +251,7 @@ export const matchingService = {
   // ---------------------------------------------------------------
   // Connect with a partner (via Edge Function)
   // ---------------------------------------------------------------
-  async connectPartner(userId: string, partnerId: string, score = 80): Promise<PartnerMatch | null> {
+  async connectPartner(userId: string, partnerId: string, score?: number): Promise<PartnerMatch | null> {
     if (isSupabaseConfigured) {
       const { data, error } = await callEdgeFunction<{ data: { match_id: string; conversation_id: string } }>(
         'connect-partner',
@@ -201,13 +281,16 @@ export const matchingService = {
     const partner = MOCK_PARTNERS.find((p) => p.id === partnerId);
     if (!partner) return null;
 
+    const { score: computedScore, matchType, reasons } = computeCompatibility(MOCK_CURRENT_USER, partner);
+
     const newMatch: PartnerMatch = {
       id:                    `match-${Date.now()}`,
       user_id:               userId,
       matched_user_id:       partnerId,
       partner,
-      compatibility_score:   score,
-      compatibility_reasons: ['Reciprocal language exchange'],
+      match_type:            matchType,
+      compatibility_score:   score ?? computedScore,
+      compatibility_reasons: reasons,
       status:                'connected',
       created_at:            new Date().toISOString(),
     };

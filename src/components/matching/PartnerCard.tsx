@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { MapPin, MessageSquare, User, MoreVertical, ShieldAlert, Ban, ArrowLeftRight, HeartHandshake, Sparkles } from 'lucide-react';
+import { MapPin, MessageSquare, User, MoreVertical, ShieldAlert, Ban, ArrowLeftRight, HeartHandshake, Sparkles, CheckCircle2 } from 'lucide-react';
 import { Profile, PartnerMatch } from '../../types';
 import { PartnerAvatar } from '../common/PartnerAvatar';
 import { LanguageBadge } from '../common/LanguageBadge';
@@ -55,7 +55,8 @@ export function PartnerCard({
     },
   ];
 
-  const matchPercent = match?.compatibility_score ?? 90 + Math.floor((partner.display_name.charCodeAt(0) % 10));
+  const matchPercent = match?.compatibility_score;
+  const topReasons = (match?.compatibility_reasons || []).slice(0, 2);
 
   return (
     <motion.div
@@ -74,7 +75,7 @@ export function PartnerCard({
         <div className="absolute top-2.5 right-3 flex items-center gap-1.5">
           <Badge variant="gold" className="text-[10px] gap-1 px-2.5 py-0.5 shadow-sm backdrop-blur-md">
             <Sparkles className="h-3 w-3" />
-            <span>{matchPercent}% Match</span>
+            <span>{matchPercent !== undefined ? `${matchPercent}% Match` : 'New here'}</span>
           </Badge>
         </div>
       </div>
@@ -175,6 +176,18 @@ export function PartnerCard({
             </div>
           )}
         </div>
+
+        {/* Why you matched */}
+        {topReasons.length > 0 && (
+          <div className="space-y-1 mb-4">
+            {topReasons.map((reason, i) => (
+              <div key={i} className="flex items-start gap-1.5 text-[11px] text-slate-500">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                <span className="leading-snug">{reason}</span>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Interests */}
         {partner.interests && partner.interests.length > 0 && (

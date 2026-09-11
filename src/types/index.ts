@@ -140,6 +140,7 @@ export interface MatchFilters {
   proficiency: string;
   interest: string;
   availability: string;
+  country: string;
   searchQuery: string;
 }
 
