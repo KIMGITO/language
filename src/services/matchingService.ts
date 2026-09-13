@@ -1,6 +1,6 @@
 import { supabase, isSupabaseConfigured, callEdgeFunction } from './supabase';
 import type { PartnerMatch, MatchFilters, Profile } from '../types';
-import { INITIAL_MATCHES, MOCK_PARTNERS, MOCK_CURRENT_USER } from '../data/mockData';
+import { INITIAL_MATCHES, MOCK_PARTNERS, MOCK_CURRENT_USER, MOCK_INTERESTS } from '../data/mockData';
 
 let matchesState: PartnerMatch[] = [...INITIAL_MATCHES];
 
@@ -208,7 +208,12 @@ export const matchingService = {
       );
     }
     if (filters.interest && filters.interest !== 'all') {
-      partners = partners.filter((p) => p.interests?.includes(filters.interest));
+      // filters.interest is now an id (see MatchFilterBar) — translate back
+      // to the name string that MOCK_PARTNERS.interests actually stores.
+      const interestName = MOCK_INTERESTS.find((i) => i.id === filters.interest)?.name;
+      if (interestName) {
+        partners = partners.filter((p) => p.interests?.includes(interestName));
+      }
     }
     if (filters.country && filters.country !== 'all') {
       partners = partners.filter((p) => p.country === filters.country);

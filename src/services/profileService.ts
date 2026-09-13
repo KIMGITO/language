@@ -1,6 +1,6 @@
 import { supabase, isSupabaseConfigured, getStorageUrl } from './supabase';
 import type { Profile, Language, OnboardingData, UserLanguage } from '../types';
-import { MOCK_CURRENT_USER, LANGUAGES, MOCK_PARTNERS } from '../data/mockData';
+import { MOCK_CURRENT_USER, LANGUAGES, MOCK_PARTNERS, MOCK_INTERESTS } from '../data/mockData';
 
 let currentProfileCache: Profile = { ...MOCK_CURRENT_USER };
 
@@ -112,20 +112,36 @@ export const profileService = {
         // 3. Replace user_languages (delete old, insert new)
         await supabase.from('user_languages').delete().eq('user_id', userId);
 
+        // Only insert language ids that actually exist in the live table —
+        // guards against stale/mismatched ids from the client (e.g. demo
+        // mode ids, or a picker that hasn't loaded the live list yet)
+        // instead of letting a bad uuid throw a raw Postgres error.
         const langInserts = [
-          ...data.nativeLanguages.map((item) => ({
-            user_id:     userId,
-            language_id: item.languageId,
-            type:        'native' as const,
-            proficiency: item.proficiency,
-          })),
-          ...data.learningLanguages.map((item) => ({
-            user_id:     userId,
-            language_id: item.languageId,
-            type:        'learning' as const,
-            proficiency: item.proficiency,
-          })),
+          ...data.nativeLanguages
+            .filter((item) => langMap.has(item.languageId))
+            .map((item) => ({
+              user_id:     userId,
+              language_id: item.languageId,
+              type:        'native' as const,
+              proficiency: item.proficiency,
+            })),
+          ...data.learningLanguages
+            .filter((item) => langMap.has(item.languageId))
+            .map((item) => ({
+              user_id:     userId,
+              language_id: item.languageId,
+              type:        'learning' as const,
+              proficiency: item.proficiency,
+            })),
         ];
+
+        const droppedCount =
+          data.nativeLanguages.length + data.learningLanguages.length - langInserts.length;
+        if (droppedCount > 0) {
+          console.warn(
+            `[profileService] Dropped ${droppedCount} language selection(s) with ids not found in the live languages table.`
+          );
+        }
 
         if (langInserts.length > 0) {
           await supabase.from('user_languages').insert(langInserts);
@@ -134,11 +150,14 @@ export const profileService = {
         // 4. Replace user_interests
         await supabase.from('user_interests').delete().eq('user_id', userId);
 
-        // Resolve interest names to IDs
+        // Resolve interest ids — data.interests now holds real ids from the
+        // live-loaded picker (see OnboardingPage), not name strings. Name
+        // matching was fragile: the UI's mock interest list didn't actually
+        // match the seeded table's names, so selections silently vanished.
         const { data: interestRows } = await supabase
           .from('interests')
           .select('id, name')
-          .in('name', data.interests);
+          .in('id', data.interests);
 
         if (interestRows && interestRows.length > 0) {
           await supabase.from('user_interests').insert(
@@ -176,7 +195,9 @@ export const profileService = {
       learning_goals:      data.learningGoal || currentProfileCache.learning_goals,
       native_languages:    nativeLangs,
       learning_languages:  learningLangs,
-      interests:           data.interests,
+      interests:           data.interests
+                              .map((id) => MOCK_INTERESTS.find((mi) => mi.id === id)?.name)
+                              .filter((name): name is string => Boolean(name)),
       onboarding_completed: true,
     };
 
@@ -254,13 +275,8 @@ export const profileService = {
         console.warn('[profileService] getInterests error:', e);
       }
     }
-    // Fallback from mockData interests list
-    return [
-      'Music', 'Movies & TV', 'Books & Literature', 'Art & Design', 'Photography',
-      'Food & Cooking', 'Travel', 'Fashion & Style', 'Fitness & Wellness',
-      'Technology', 'Gaming', 'Culture & Traditions', 'History', 'Science',
-      'Football (Soccer)', 'Basketball', 'Hiking & Outdoors', 'Language Learning',
-    ].map((name, i) => ({ id: `interest-${i}`, name }));
+    // Fallback from mockData — mirrors the real seed table exactly
+    return MOCK_INTERESTS;
   },
 
   // ---------------------------------------------------------------

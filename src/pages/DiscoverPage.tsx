@@ -19,20 +19,29 @@ export function DiscoverPage() {
     loadMatches,
   } = useMatchingStore();
   const { startConversationWithUser } = useChatStore();
-  const { currentProfile } = useProfileStore();
+  const { currentProfile, availableLanguages, availableInterests } = useProfileStore();
   const { navigate } = useUiStore();
 
-  const activeLanguage = filters.practiceLanguage || currentProfile?.learning_languages[0]?.language.name || 'English';
+  // filters.practiceLanguage holds a real language id (Supabase-generated,
+  // or the mock id in demo mode) — resolve it to a Language object purely
+  // for display (name/flag), never re-derive an id from a name.
+  const activeLanguageId =
+    filters.practiceLanguage !== 'all' && filters.practiceLanguage
+      ? filters.practiceLanguage
+      : currentProfile?.learning_languages[0]?.language.id || '';
+  const activeLanguage =
+    availableLanguages.find((l) => l.id === activeLanguageId) ||
+    currentProfile?.learning_languages[0]?.language;
 
   React.useEffect(() => {
-    if (!filters.practiceLanguage && currentProfile?.learning_languages[0]?.language.name) {
-      setFilter('practiceLanguage', currentProfile.learning_languages[0].language.name);
+    if (!filters.practiceLanguage && currentProfile?.learning_languages[0]?.language.id) {
+      setFilter('practiceLanguage', currentProfile.learning_languages[0].language.id);
     }
     loadMatches();
   }, [loadMatches, currentProfile]);
 
-  const handleSelectLanguage = (langName: string) => {
-    setFilter('practiceLanguage', langName);
+  const handleSelectLanguage = (langId: string) => {
+    setFilter('practiceLanguage', langId);
   };
 
   const handleStartChatWithPartner = async (partner: Profile) => {
@@ -69,15 +78,17 @@ export function DiscoverPage() {
         filters={filters}
         onFilterChange={setFilter}
         onReset={resetFilters}
-        selectedLanguage={activeLanguage}
+        selectedLanguageId={activeLanguageId}
         onSelectLanguage={handleSelectLanguage}
+        languages={availableLanguages}
+        interests={availableInterests}
       />
 
       {/* Section Header */}
       <div className="flex items-center justify-between pt-2 mb-4">
         <div className="flex items-center gap-2">
           <h2 className="font-heading text-lg sm:text-xl font-bold text-slate-900">
-            {activeLanguage} Native Partners
+            {activeLanguage?.name || 'All'} Native Partners
           </h2>
           <Badge variant="blue" className="text-xs">
             Reciprocal Match

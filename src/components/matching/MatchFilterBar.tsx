@@ -1,7 +1,6 @@
 import React from 'react';
 import { Search, RotateCcw, SlidersHorizontal, Check } from 'lucide-react';
-import { MatchFilters } from '../../types';
-import { LANGUAGES, INTERESTS } from '../../data/mockData';
+import { MatchFilters, Language } from '../../types';
 import { Input } from '../ui/input';
 import { Select } from '../ui/select';
 import { Button } from '../ui/button';
@@ -11,20 +10,31 @@ interface MatchFilterBarProps {
   filters: MatchFilters;
   onFilterChange: (key: keyof MatchFilters, value: string) => void;
   onReset: () => void;
-  selectedLanguage: string;
-  onSelectLanguage: (languageName: string) => void;
+  selectedLanguageId: string;
+  onSelectLanguage: (languageId: string) => void;
+  /** Real language/interest lists — Supabase-generated ids when connected,
+   *  the mock array's ids in demo mode. Sourced from profileStore so this
+   *  bar never has to know which mode it's in. */
+  languages: Language[];
+  interests: { id: string; name: string; category?: string }[];
 }
 
 export function MatchFilterBar({
   filters,
   onFilterChange,
   onReset,
-  selectedLanguage,
+  selectedLanguageId,
   onSelectLanguage,
+  languages,
+  interests,
 }: MatchFilterBarProps) {
   const [showAdvanced, setShowAdvanced] = React.useState(false);
 
-  const topLanguages = ['English', 'Spanish', 'Swahili', 'French', 'Japanese', 'German'];
+  const topLanguageCodes = ['en', 'es', 'sw', 'fr', 'ja', 'de'];
+  const topLanguages = topLanguageCodes
+    .map((code) => languages.find((l) => l.code === code))
+    .filter((l): l is Language => Boolean(l));
+  const moreLanguages = languages.filter((l) => !topLanguageCodes.includes(l.code));
 
   const countries = [
     'All countries',
@@ -48,14 +58,13 @@ export function MatchFilterBar({
         </label>
         
         <div className="flex items-center gap-2 flex-wrap">
-          {topLanguages.map((langName) => {
-            const langObj = LANGUAGES.find((l) => l.name === langName);
-            const isSelected = selectedLanguage.toLowerCase() === langName.toLowerCase();
+          {topLanguages.map((lang) => {
+            const isSelected = selectedLanguageId === lang.id;
             return (
               <button
-                key={langName}
+                key={lang.id}
                 type="button"
-                onClick={() => onSelectLanguage(langName)}
+                onClick={() => onSelectLanguage(lang.id)}
                 className={cn(
                   'inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-150 cursor-pointer border',
                   isSelected
@@ -63,8 +72,8 @@ export function MatchFilterBar({
                     : 'bg-white/80 text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-slate-300'
                 )}
               >
-                <span className="text-base select-none">{langObj?.flag || '🌐'}</span>
-                <span>{langName}</span>
+                <span className="text-base select-none">{lang.flag || '🌐'}</span>
+                <span>{lang.name}</span>
                 {isSelected && <Check className="h-3.5 w-3.5 ml-0.5 stroke-[2.5]" />}
               </button>
             );
@@ -72,15 +81,15 @@ export function MatchFilterBar({
 
           <div className="min-w-[150px] max-w-[200px]">
             <Select
-              value={topLanguages.includes(selectedLanguage) ? '' : selectedLanguage}
+              value={topLanguageCodes.includes(languages.find((l) => l.id === selectedLanguageId)?.code || '') ? '' : selectedLanguageId}
               onChange={(e) => {
                 if (e.target.value) onSelectLanguage(e.target.value);
               }}
               className="h-9 text-xs rounded-xl"
             >
               <option value="">More languages...</option>
-              {LANGUAGES.filter((l) => !topLanguages.includes(l.name)).map((lang) => (
-                <option key={lang.id} value={lang.name}>
+              {moreLanguages.map((lang) => (
+                <option key={lang.id} value={lang.id}>
                   {lang.flag} {lang.name}
                 </option>
               ))}
@@ -176,9 +185,9 @@ export function MatchFilterBar({
                 className="h-9 text-xs rounded-xl"
               >
                 <option value="all">Any interest</option>
-                {INTERESTS.map((interest) => (
-                  <option key={interest} value={interest}>
-                    {interest}
+                {interests.map((interest) => (
+                  <option key={interest.id} value={interest.id}>
+                    {interest.name}
                   </option>
                 ))}
               </Select>

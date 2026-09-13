@@ -18,19 +18,27 @@ export const safetyService = {
   },
 
   // ---------------------------------------------------------------
-  // Unblock a user
+  // Unblock a user — also gives both people a clean slate in discovery
+  // (see unblock_user SQL function for why this needs to be an RPC
+  // rather than a plain delete from `blocks`).
   // ---------------------------------------------------------------
-  async unblockUser(blockerId: string, blockedId: string): Promise<void> {
+  async unblockUser(blockerId: string, blockedId: string): Promise<{ success: boolean; error?: string }> {
     if (isSupabaseConfigured) {
       try {
-        await supabase
-          .from('blocks')
-          .delete()
-          .match({ blocker_id: blockerId, blocked_id: blockedId });
-      } catch (e) {
-        console.warn('[safetyService] unblockUser error:', e);
+        const { error } = await supabase.rpc('unblock_user', {
+          p_blocker_id: blockerId,
+          p_blocked_id: blockedId,
+        });
+        if (error) return { success: false, error: error.message };
+        return { success: true };
+      } catch (e: unknown) {
+        return { success: false, error: e instanceof Error ? e.message : 'Unblock failed' };
       }
     }
+
+    // Mock fallback
+    await new Promise((r) => setTimeout(r, 200));
+    return { success: true };
   },
 
   // ---------------------------------------------------------------

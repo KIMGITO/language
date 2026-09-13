@@ -14,7 +14,6 @@ import {
 import { useAuthStore } from '../stores/authStore';
 import { useProfileStore } from '../stores/profileStore';
 import { useUiStore } from '../stores/uiStore';
-import { LANGUAGES, INTERESTS } from '../data/mockData';
 import { LanguageProficiency } from '../types';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -39,38 +38,85 @@ const AVAILABILITY_OPTIONS = [
 
 export function OnboardingPage() {
   const { user } = useAuthStore();
-  const { completeOnboarding, loading } = useProfileStore();
+  const { completeOnboarding, updateOnboardingData, loading, availableLanguages, availableInterests } = useProfileStore();
   const { navigate } = useUiStore();
 
   const [step, setStep] = React.useState(1);
-  const [nativeLangId, setNativeLangId] = React.useState('lang-sw');
-  const [learningLangId, setLearningLangId] = React.useState('lang-en');
+  // Real, Supabase-generated language ids (or the mock ids in demo mode) —
+  // seeded once availableLanguages loads, see the effect below. Starting
+  // empty avoids ever submitting a hardcoded id that doesn't exist in
+  // whichever backend is actually connected.
+  const [nativeLangId, setNativeLangId] = React.useState('');
+  const [learningLangId, setLearningLangId] = React.useState('');
   const [proficiency, setProficiency] = React.useState<LanguageProficiency>('Intermediate');
   const [intents, setIntents] = React.useState<string[]>(['practice', 'language_exchange']);
-  const [selectedTopics, setSelectedTopics] = React.useState<string[]>([
-    'Travel',
-    'Food & Cooking',
-    'Culture & Traditions',
-    'Music',
-  ]);
+  // Interest ids (real Supabase ids, or mock ids in demo mode) — seeded
+  // once availableInterests loads, same pattern as the language ids above.
+  const [selectedTopics, setSelectedTopics] = React.useState<string[]>([]);
   const [availability, setAvailability] = React.useState(
     'Weekday evenings (18:00 - 21:00)'
   );
 
-  const toggleTopic = (topic: string) => {
-    if (selectedTopics.includes(topic)) {
+  // Seed language selections from the real (Supabase-generated, or mock in
+  // demo mode) language list once it loads, instead of hardcoding ids that
+  // may not exist in whichever backend is actually connected.
+  React.useEffect(() => {
+    if (availableLanguages.length === 0) return;
+    setNativeLangId((current) => {
+      if (current && availableLanguages.some((l) => l.id === current)) return current;
+      const preferred = availableLanguages.find((l) => l.code === 'sw');
+      return (preferred ?? availableLanguages[0]).id;
+    });
+    setLearningLangId((current) => {
+      if (current && availableLanguages.some((l) => l.id === current)) return current;
+      const preferred = availableLanguages.find((l) => l.code === 'en');
+      return (preferred ?? availableLanguages[Math.min(1, availableLanguages.length - 1)]).id;
+    });
+  }, [availableLanguages]);
+
+  // Seed a friendly default topic selection once the real interest list
+  // loads — by name so the defaults read the same regardless of which
+  // backend's ids are underneath.
+  React.useEffect(() => {
+    if (availableInterests.length === 0 || selectedTopics.length > 0) return;
+    const preferredNames = ['Travel', 'Food & Cooking', 'Music', 'Culture & Traditions'];
+    const seeded = availableInterests
+      .filter((i) => preferredNames.includes(i.name))
+      .map((i) => i.id);
+    setSelectedTopics(seeded.length > 0 ? seeded : availableInterests.slice(0, 4).map((i) => i.id));
+  }, [availableInterests]);
+
+  const toggleTopic = (topicId: string) => {
+    if (selectedTopics.includes(topicId)) {
       if (selectedTopics.length > 1) {
-        setSelectedTopics(selectedTopics.filter((t) => t !== topic));
+        setSelectedTopics(selectedTopics.filter((t) => t !== topicId));
       }
     } else {
       if (selectedTopics.length < 8) {
-        setSelectedTopics([...selectedTopics, topic]);
+        setSelectedTopics([...selectedTopics, topicId]);
       }
     }
   };
 
   const handleFinish = async () => {
-    const success = await completeOnboarding('usr-1');
+    // Push everything the wizard actually collected into the store before
+    // submitting — previously this fell through to the store's hardcoded
+    // initialOnboardingData defaults, so none of the user's real selections
+    // (language pair, proficiency, topics, availability) were ever saved.
+    updateOnboardingData({
+      nativeLanguages: [{ languageId: nativeLangId, proficiency: 'Native' }],
+      learningLanguages: [{ languageId: learningLangId, proficiency }],
+      communityIntent: intents as ('practice' | 'help_others' | 'language_exchange')[],
+      interests: selectedTopics,
+      availability,
+    });
+
+    // Submit under the real authenticated user's id — was previously a
+    // hardcoded 'usr-1' placeholder that doesn't exist in any real backend.
+    const userId = user?.id;
+    if (!userId) return;
+
+    const success = await completeOnboarding(userId);
     if (success) {
       navigate('home');
     }
@@ -121,7 +167,12 @@ export function OnboardingPage() {
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-72 overflow-y-auto pr-1">
-                  {LANGUAGES.map((lang) => {
+                  {availableLanguages.length === 0 && (
+                    <p className="col-span-full text-xs text-slate-400 py-6 text-center">
+                      Loading languages...
+                    </p>
+                  )}
+                  {availableLanguages.map((lang) => {
                     const isSelected = nativeLangId === lang.id;
                     return (
                       <button
@@ -159,7 +210,7 @@ export function OnboardingPage() {
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-72 overflow-y-auto pr-1">
-                  {LANGUAGES.filter((l) => l.id !== nativeLangId).map((lang) => {
+                  {availableLanguages.filter((l) => l.id !== nativeLangId).map((lang) => {
                     const isSelected = learningLangId === lang.id;
                     return (
                       <button
@@ -245,13 +296,13 @@ export function OnboardingPage() {
                 </div>
 
                 <div className="flex flex-wrap gap-2 max-h-64 overflow-y-auto pr-1">
-                  {INTERESTS.map((topic) => {
-                    const isSelected = selectedTopics.includes(topic);
+                  {availableInterests.map((topic) => {
+                    const isSelected = selectedTopics.includes(topic.id);
                     return (
                       <button
-                        key={topic}
+                        key={topic.id}
                         type="button"
-                        onClick={() => toggleTopic(topic)}
+                        onClick={() => toggleTopic(topic.id)}
                         className={cn(
                           'px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer border',
                           isSelected
@@ -259,7 +310,7 @@ export function OnboardingPage() {
                             : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200/80'
                         )}
                       >
-                        #{topic}
+                        #{topic.name}
                       </button>
                     );
                   })}

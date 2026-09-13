@@ -17,22 +17,54 @@ export const LANGUAGES: Language[] = [
   { id: 'lang-ru', code: 'ru', name: 'Russian', nativeName: 'Русский', flag: '🇷🇺' },
 ];
 
-export const INTERESTS = [
-  'Travel',
-  'Food & Cooking',
-  'Music',
-  'Technology',
-  'Business & Career',
-  'Sports & Fitness',
-  'Movies & Cinema',
-  'Culture & Traditions',
-  'Books & Literature',
-  'Everyday Life',
-  'Art & Photography',
-  'Nature & Outdoors',
-  'Coffee & Cafes',
-  'Philosophy & Ideas'
-];
+// Single source of truth for the demo-mode interest id<->name mapping —
+// mirrors supabase/migrations/003_seed.sql exactly (same names, same
+// order) so demo mode and a real Supabase project behave identically.
+// Used by profileService.getInterests() (so pickers show these ids) and
+// matchingService's mock discovery filter (to translate a filter id back
+// to the plain name strings stored on MOCK_PARTNERS/MOCK_CURRENT_USER).
+export const MOCK_INTERESTS: { id: string; name: string; category: string }[] = [
+  { name: 'Music', category: 'Arts & Culture' },
+  { name: 'Movies & TV', category: 'Arts & Culture' },
+  { name: 'Books & Literature', category: 'Arts & Culture' },
+  { name: 'Art & Design', category: 'Arts & Culture' },
+  { name: 'Photography', category: 'Arts & Culture' },
+  { name: 'Dance', category: 'Arts & Culture' },
+  { name: 'Theater & Performing Arts', category: 'Arts & Culture' },
+  { name: 'Food & Cooking', category: 'Food & Lifestyle' },
+  { name: 'Travel', category: 'Food & Lifestyle' },
+  { name: 'Fashion & Style', category: 'Food & Lifestyle' },
+  { name: 'Fitness & Wellness', category: 'Food & Lifestyle' },
+  { name: 'Yoga & Meditation', category: 'Food & Lifestyle' },
+  { name: 'Football (Soccer)', category: 'Sports' },
+  { name: 'Basketball', category: 'Sports' },
+  { name: 'Tennis', category: 'Sports' },
+  { name: 'Swimming', category: 'Sports' },
+  { name: 'Hiking & Outdoors', category: 'Sports' },
+  { name: 'Cycling', category: 'Sports' },
+  { name: 'Technology', category: 'Technology' },
+  { name: 'Gaming', category: 'Technology' },
+  { name: 'Coding & Programming', category: 'Technology' },
+  { name: 'AI & Machine Learning', category: 'Technology' },
+  { name: 'Education', category: 'Education & Career' },
+  { name: 'Business & Entrepreneurship', category: 'Education & Career' },
+  { name: 'Science', category: 'Education & Career' },
+  { name: 'History', category: 'Education & Career' },
+  { name: 'Politics & Society', category: 'Education & Career' },
+  { name: 'Culture & Traditions', category: 'Culture' },
+  { name: 'Religion & Spirituality', category: 'Culture' },
+  { name: 'Philosophy', category: 'Culture' },
+  { name: 'Nature & Environment', category: 'Nature' },
+  { name: 'Animals & Pets', category: 'Nature' },
+  { name: 'Gardening', category: 'Nature' },
+  { name: 'Volunteering', category: 'Other' },
+  { name: 'Family & Parenting', category: 'Other' },
+  { name: 'Language Learning', category: 'Other' },
+].map((item, i) => ({ id: `interest-${i}`, ...item }));
+
+// Flat name list — kept for any legacy display-only usage that just needs
+// interest name strings (no id required).
+export const INTERESTS = MOCK_INTERESTS.map((i) => i.name);
 
 export const CONVERSATION_TOPICS: ConversationTopic[] = [
   {
@@ -143,7 +175,7 @@ export const MOCK_CURRENT_USER: Profile = {
       language: LANGUAGES[0], // English
     }
   ],
-  interests: ['Travel', 'Food & Cooking', 'Music', 'Technology', 'Art & Photography', 'Culture & Traditions'],
+  interests: ['Travel', 'Food & Cooking', 'Music', 'Technology', 'Photography', 'Culture & Traditions'],
   preferred_topics: ['Everyday Life', 'Culture', 'Travel', 'Food']
 };
 
@@ -214,7 +246,7 @@ export const MOCK_PARTNERS: Profile[] = [
       }
     ],
     learning_languages: [],
-    interests: ['Technology', 'Everyday Life', 'Sports & Fitness', 'Books & Literature'],
+    interests: ['Technology', 'Language Learning', 'Fitness & Wellness', 'Books & Literature'],
     preferred_topics: ['Technology', 'Work', 'Everyday Life']
   },
   {
@@ -253,7 +285,7 @@ export const MOCK_PARTNERS: Profile[] = [
         language: LANGUAGES[5], // Swahili
       }
     ],
-    interests: ['Travel', 'Food & Cooking', 'Movies & Cinema', 'Culture & Traditions'],
+    interests: ['Travel', 'Food & Cooking', 'Movies & TV', 'Culture & Traditions'],
     preferred_topics: ['Food', 'Culture', 'Everyday Life']
   },
   {
@@ -292,7 +324,7 @@ export const MOCK_PARTNERS: Profile[] = [
         language: LANGUAGES[0], // English
       }
     ],
-    interests: ['Nature & Outdoors', 'Culture & Traditions', 'Everyday Life', 'Travel'],
+    interests: ['Hiking & Outdoors', 'Culture & Traditions', 'Language Learning', 'Travel'],
     preferred_topics: ['Culture', 'Travel', 'Everyday Life']
   },
   {
@@ -331,7 +363,7 @@ export const MOCK_PARTNERS: Profile[] = [
         language: LANGUAGES[0], // English
       }
     ],
-    interests: ['Art & Photography', 'Music', 'Technology', 'Sports & Fitness'],
+    interests: ['Photography', 'Music', 'Technology', 'Fitness & Wellness'],
     preferred_topics: ['Music', 'Everyday Life', 'Hobbies']
   },
   {
@@ -370,7 +402,7 @@ export const MOCK_PARTNERS: Profile[] = [
         language: LANGUAGES[0], // English
       }
     ],
-    interests: ['Art & Photography', 'Music', 'Culture & Traditions', 'Travel'],
+    interests: ['Photography', 'Music', 'Culture & Traditions', 'Travel'],
     preferred_topics: ['Culture', 'Hobbies', 'Travel']
   }
 ];

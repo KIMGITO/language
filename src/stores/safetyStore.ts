@@ -2,10 +2,11 @@ import { create } from 'zustand';
 import { Profile, Report } from '../types';
 import { safetyService } from '../services/safetyService';
 import { useProfileStore } from './profileStore';
+import { isSupabaseConfigured } from '../services/supabase';
 
 interface SafetyState {
   blockedUserIds: string[];
-  blockedUsers: { blocked_user_id: string; blocked_name: string }[];
+  blockedUsers: { blocked_user_id: string; blocked_name: string; avatar_url?: string | null }[];
   reportDialogOpen: boolean;
   blockDialogOpen: boolean;
   targetUser: Profile | null;
@@ -24,14 +25,13 @@ interface SafetyState {
   confirmBlock: () => Promise<boolean>;
   unblockUser: (blockedId: string) => Promise<void>;
   fetchBlockedUsers: () => Promise<void>;
+  fetchBlockedProfiles: () => Promise<void>;
   clearToast: () => void;
 }
 
 export const useSafetyStore = create<SafetyState>((set, get) => ({
   blockedUserIds: [],
-  blockedUsers: [
-    { blocked_user_id: 'user-blocked-demo', blocked_name: 'Unwanted Spammer' }
-  ],
+  blockedUsers: [],
   reportDialogOpen: false,
   blockDialogOpen: false,
   targetUser: null,
@@ -122,7 +122,11 @@ export const useSafetyStore = create<SafetyState>((set, get) => ({
   unblockUser: async (blockedId: string) => {
     const currentProfile = useProfileStore.getState().currentProfile;
     if (!currentProfile) return;
-    await safetyService.unblockUser(currentProfile.id, blockedId);
+    const { success } = await safetyService.unblockUser(currentProfile.id, blockedId);
+    if (!success) {
+      set({ toastMessage: 'Could not unblock — please try again.' });
+      return;
+    }
     set((state) => ({
       blockedUserIds: state.blockedUserIds.filter((id) => id !== blockedId),
       blockedUsers: state.blockedUsers.filter((b) => b.blocked_user_id !== blockedId),
@@ -135,6 +139,25 @@ export const useSafetyStore = create<SafetyState>((set, get) => ({
     if (!currentProfile) return;
     const ids = await safetyService.fetchBlockedUsers(currentProfile.id);
     set({ blockedUserIds: ids });
+  },
+
+  // Populates the full list (name + avatar) shown in Settings. In demo
+  // mode this intentionally leaves whatever confirmBlock has built up
+  // locally during the session rather than overwriting it with an empty
+  // server response — there's no backing table to actually read from.
+  fetchBlockedProfiles: async () => {
+    if (!isSupabaseConfigured) return;
+    const currentProfile = useProfileStore.getState().currentProfile;
+    if (!currentProfile) return;
+    const profiles = await safetyService.fetchBlockedProfiles(currentProfile.id);
+    set({
+      blockedUserIds: profiles.map((p) => p.id),
+      blockedUsers: profiles.map((p) => ({
+        blocked_user_id: p.id,
+        blocked_name: p.display_name,
+        avatar_url: p.avatar_url,
+      })),
+    });
   },
 
   clearToast: () => set({ toastMessage: null }),

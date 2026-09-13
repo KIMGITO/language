@@ -4,7 +4,6 @@ import {
   Shield,
   User,
   LogOut,
-  Ban,
   CheckCircle2,
   Sliders,
 } from 'lucide-react';
@@ -15,18 +14,23 @@ import { useUiStore } from '../stores/uiStore';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
+import { Avatar } from '../components/ui/avatar';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
 
 export function SettingsPage() {
   const { user, logout } = useAuthStore();
   const { currentProfile, updateCurrentProfile } = useProfileStore();
-  const { blockedUsers, unblockUser } = useSafetyStore();
+  const { blockedUsers, unblockUser, fetchBlockedProfiles } = useSafetyStore();
   const { navigate } = useUiStore();
 
   const [activeTab, setActiveTab] = React.useState('account');
   const [emailNotifications, setEmailNotifications] = React.useState(true);
   const [inAppSound, setInAppSound] = React.useState(true);
   const [savedSuccess, setSavedSuccess] = React.useState(false);
+
+  React.useEffect(() => {
+    fetchBlockedProfiles();
+  }, [fetchBlockedProfiles]);
 
   const handleSaveAccount = (e: React.FormEvent) => {
     e.preventDefault();
@@ -189,9 +193,11 @@ export function SettingsPage() {
                     className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-500">
-                        <Ban className="h-4 w-4" />
-                      </div>
+                      <Avatar
+                        src={blocked.avatar_url}
+                        fallback={blocked.blocked_name.charAt(0)}
+                        size="sm"
+                      />
                       <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
                         {blocked.blocked_name}
                       </span>
