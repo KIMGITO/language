@@ -16,7 +16,7 @@ export function MessagesPage() {
   const {
     conversations,
     activeConversationId,
-    activeMessages,
+    messages,
     setActiveConversation,
     loadConversations,
     sendMessage,
@@ -118,7 +118,7 @@ export function MessagesPage() {
             conversation={activeConvo}
             partner={partner}
             currentUserId={currentProfile?.id || ''}
-            messages={activeMessages}
+            messages={messages}
             onSendMessage={handleSendMessage}
             onOpenTopics={() => setTopicModalOpen(true)}
             selectedTopic={selectedTopic}

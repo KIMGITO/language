@@ -7,6 +7,8 @@ import { ReportDialog } from '../safety/ReportDialog';
 import { BlockUserDialog } from '../safety/BlockUserDialog';
 import { useSafetyStore } from '../../stores/safetyStore';
 import { useUiStore } from '../../stores/uiStore';
+import { useProfileStore } from '../../stores/profileStore';
+import { useChatStore } from '../../stores/chatStore';
 import { cn } from '../../lib/utils';
 import { CheckCircle2, X } from 'lucide-react';
 
@@ -17,7 +19,24 @@ interface AppLayoutProps {
 export function AppLayout({ children }: AppLayoutProps) {
   const { toastMessage, clearToast } = useSafetyStore();
   const { currentRoute } = useUiStore();
+  const { currentProfile } = useProfileStore();
+  const { loadConversations, subscribeConversations } = useChatStore();
   const isMessages = currentRoute === 'messages';
+
+  // Single app-wide conversation subscription lifecycle, tied to the
+  // logged-in session rather than whichever page happens to be mounted —
+  // this is what makes unread badges in the sidebar/tab bar update live
+  // and lets a brand-new incoming conversation appear without a manual
+  // refresh, regardless of which page you're currently on.
+  React.useEffect(() => {
+    if (!currentProfile?.id) return;
+    loadConversations(currentProfile.id);
+    subscribeConversations(currentProfile.id);
+    return () => {
+      const unsub = useChatStore.getState().unsubscribeConvList;
+      if (unsub) unsub();
+    };
+  }, [currentProfile?.id]);
 
   React.useEffect(() => {
     if (toastMessage) {

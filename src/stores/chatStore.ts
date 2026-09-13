@@ -8,7 +8,6 @@ interface ChatState {
   activeConversation: Conversation | null;
   activeConversationId: string | null;
   messages: Message[];
-  activeMessages: Message[];
   loadingConversations: boolean;
   loadingMessages: boolean;
   sendingMessage: boolean;
@@ -18,6 +17,7 @@ interface ChatState {
   error: string | null;
   unsubscribeRealtime: (() => void) | null;
   unsubscribeConvList: (() => void) | null;
+  subscribedConversationIds: string[];
 
   loadConversations: (userId?: string) => Promise<void>;
   fetchConversations: (userId?: string) => Promise<void>;
@@ -39,7 +39,6 @@ export const useChatStore = create<ChatState>((set, get) => ({
   activeConversation: null,
   activeConversationId: null,
   messages: [],
-  activeMessages: [],
   loadingConversations: false,
   loadingMessages: false,
   sendingMessage: false,
@@ -49,6 +48,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   error: null,
   unsubscribeRealtime: null,
   unsubscribeConvList: null,
+  subscribedConversationIds: [],
 
   loadConversations: async (userId?: string) => {
     await get().fetchConversations(userId);
@@ -61,6 +61,18 @@ export const useChatStore = create<ChatState>((set, get) => ({
     try {
       const list = await chatService.fetchConversations(id);
       set({ conversations: list, loadingConversations: false });
+
+      // If the set of conversation ids grew (e.g. someone just started a
+      // brand-new conversation with us), re-subscribe so the scoped
+      // messages-channel filter picks up the new id — otherwise we'd only
+      // hear about it via the membership channel until the next full poll.
+      const newIds = list.map((c) => c.id);
+      const prevIds = get().subscribedConversationIds;
+      const changed =
+        newIds.length !== prevIds.length || newIds.some((cid) => !prevIds.includes(cid));
+      if (changed && get().unsubscribeConvList) {
+        get().subscribeConversations(id);
+      }
     } catch (err: unknown) {
       set({
         loadingConversations: false,
@@ -74,10 +86,11 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const prevUnsub = get().unsubscribeConvList;
     if (prevUnsub) prevUnsub();
 
-    const unsub = chatService.subscribeToConversations(userId, () => {
+    const conversationIds = get().conversations.map((c) => c.id);
+    const unsub = chatService.subscribeToConversations(userId, conversationIds, () => {
       get().fetchConversations(userId);
     });
-    set({ unsubscribeConvList: unsub });
+    set({ unsubscribeConvList: unsub, subscribedConversationIds: conversationIds });
   },
 
   setActiveConversation: async (conversationId: string) => {
@@ -102,7 +115,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
     try {
       const msgs = await chatService.fetchMessages(conversationId);
-      set({ messages: msgs, activeMessages: msgs, loadingMessages: false });
+      set({ messages: msgs, loadingMessages: false });
 
       // Mark read
       const currentProfile = useProfileStore.getState().currentProfile;
@@ -281,7 +294,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   clearActiveConversation: () => {
     const unsub = get().unsubscribeRealtime;
     if (unsub) unsub();
-    set({ activeConversation: null, activeConversationId: null, messages: [], activeMessages: [], unsubscribeRealtime: null });
+    set({ activeConversation: null, activeConversationId: null, messages: [], unsubscribeRealtime: null });
   },
 
   clearError: () => set({ error: null }),

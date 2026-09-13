@@ -56,7 +56,7 @@ export const chatService = {
                 .eq('conversation_id', conv.id)
                 .order('created_at', { ascending: false })
                 .limit(1)
-                .single(),
+                .maybeSingle(),
               supabase
                 .from('messages')
                 .select('*', { count: 'exact', head: true })
@@ -277,32 +277,57 @@ export const chatService = {
 
   // ---------------------------------------------------------------
   // Subscribe to conversation list updates (unread count changes)
+  //
+  // Two separate, narrowly-filtered channels instead of one unfiltered
+  // listener on `messages`/`conversations` (which have no direct user_id
+  // column to filter on, so the old version fired for every user's
+  // activity system-wide and triggered a refetch each time):
+  //
+  //  1. conversation_members INSERT filtered to this user — fires the
+  //     moment someone else starts a brand-new conversation with you
+  //     (get_or_create_conversation adds a membership row for you).
+  //  2. messages INSERT filtered to the conversation ids you're already
+  //     in — catches new messages in conversations you already know about.
+  //
+  // conversationIds should be refreshed (by re-calling this) whenever the
+  // conversation list changes, so the filter doesn't go stale.
   // ---------------------------------------------------------------
-  subscribeToConversations(userId: string, onChange: () => void): () => void {
+  subscribeToConversations(userId: string, conversationIds: string[], onChange: () => void): () => void {
     if (!isSupabaseConfigured) return () => {};
 
-    const channel = supabase
-      .channel(`conversations:${userId}`)
-      .on(
-        'postgres_changes',
-        {
-          event:  'UPDATE',
-          schema: 'public',
-          table:  'conversations',
-        },
-        () => onChange()
-      )
+    const membershipChannel = supabase
+      .channel(`conv-membership:${userId}`)
       .on(
         'postgres_changes',
         {
           event:  'INSERT',
           schema: 'public',
-          table:  'messages',
+          table:  'conversation_members',
+          filter: `user_id=eq.${userId}`,
         },
         () => onChange()
       )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    const channels = [membershipChannel];
+
+    if (conversationIds.length > 0) {
+      const messagesChannel = supabase
+        .channel(`conv-messages:${userId}`)
+        .on(
+          'postgres_changes',
+          {
+            event:  'INSERT',
+            schema: 'public',
+            table:  'messages',
+            filter: `conversation_id=in.(${conversationIds.join(',')})`,
+          },
+          () => onChange()
+        )
+        .subscribe();
+      channels.push(messagesChannel);
+    }
+
+    return () => { channels.forEach((c) => supabase.removeChannel(c)); };
   },
 };
