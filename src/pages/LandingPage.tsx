@@ -353,6 +353,22 @@ export function LandingPage() {
             transition={{ duration: 0.6, delay: 0.15 }}
             className="lg:col-span-5 relative"
           >
+            {/* Floating stat badge, echoes a small overlay label on top of the preview */}
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 1 }}
+              className="hidden sm:flex absolute -left-8 top-10 z-20 items-center gap-2.5 bg-white rounded-2xl shadow-xl border border-slate-100 px-4 py-3"
+            >
+              <div className="h-9 w-9 rounded-xl bg-slate-900 flex items-center justify-center text-white shrink-0">
+                <Flame className="h-4 w-4 text-amber-400" />
+              </div>
+              <div>
+                <p className="font-heading font-bold text-sm text-slate-900 leading-none">12 days</p>
+                <p className="text-[10px] text-slate-400 mt-0.5">avg. learner streak</p>
+              </div>
+            </motion.div>
+
             <div className="relative mx-auto max-w-md rounded-3xl border border-slate-200/80 bg-white p-6 space-y-5 shadow-2xl shadow-indigo-500/10">
               <div className="flex items-center justify-between pb-3.5 border-b border-slate-100">
                 <div className="flex items-center gap-3">
@@ -488,33 +504,34 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Supported Languages */}
+      {/* Supported Languages — minimal grayscale grid, colorizes on hover */}
       <section className="py-16 px-4 sm:px-6 max-w-6xl mx-auto w-full">
         <Reveal className="text-center max-w-md mx-auto mb-10">
-          <Badge variant="emerald" className="mb-2">Global squad</Badge>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-2">
+            Practiced in over 12 languages
+          </p>
           <h2 className="font-heading text-3xl font-bold text-slate-900 tracking-tight">
             Pick your language
           </h2>
-          <p className="text-slate-500 text-xs mt-1">
-            Real speakers, real accents, real conversations.
-          </p>
         </Reveal>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3">
+        <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 border-t border-l border-slate-100">
           {LANGUAGES.map((lang, i) => (
             <motion.div
               key={lang.id}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.35, delay: (i % 7) * 0.05 }}
-              whileHover={{ y: -4, scale: 1.03 }}
+              transition={{ duration: 0.3, delay: (i % 7) * 0.04 }}
               onClick={() => navigate('register')}
-              className="p-4 rounded-2xl bg-white border border-slate-200/80 text-center transition-colors duration-200 cursor-pointer hover:border-indigo-300 hover:shadow-md"
+              className="group p-5 border-r border-b border-slate-100 text-center cursor-pointer transition-colors duration-200 hover:bg-slate-50"
             >
-              <span className="text-3xl block mb-2">{lang.flag}</span>
-              <p className="font-heading font-bold text-xs text-slate-900">{lang.name}</p>
-              <p className="text-[10px] text-slate-400 mt-0.5">{lang.nativeName}</p>
+              <span className="text-2xl block mb-2 grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300">
+                {lang.flag}
+              </span>
+              <p className="font-heading font-bold text-[11px] text-slate-400 group-hover:text-slate-900 transition-colors">
+                {lang.name}
+              </p>
             </motion.div>
           ))}
         </div>
@@ -633,58 +650,57 @@ export function LandingPage() {
         </Reveal>
       </section>
 
-      {/* Footer */}
-      <footer className="mt-auto bg-slate-950 text-slate-400 px-4 sm:px-8 pt-14 pb-8">
+      {/* Footer — minimal, monochrome, grid-of-links style */}
+      <footer className="mt-auto bg-white border-t border-slate-100 px-4 sm:px-8 pt-14 pb-8">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 pb-10 border-b border-slate-800/80">
-            <div className="col-span-2 sm:col-span-1">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-8 pb-10">
+            <div className="col-span-2">
               <div className="flex items-center gap-2.5 mb-3">
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white">
-                  <Globe2 className="h-4 w-4 text-amber-300" />
+                <div className="h-8 w-8 rounded-lg bg-slate-900 flex items-center justify-center text-white">
+                  <Globe2 className="h-4 w-4" />
                 </div>
-                <span className="font-heading font-bold text-white text-base">LinguaConnect</span>
+                <span className="font-heading font-bold text-slate-900 text-base">LinguaConnect</span>
               </div>
-              <p className="text-xs leading-relaxed max-w-xs">
+              <p className="text-xs leading-relaxed max-w-xs text-slate-500">
                 Real people, real conversations, real fluency. Made for
                 learners who'd rather chat than cram.
               </p>
-              <div className="flex items-center gap-3 mt-4">
+              <div className="flex items-center gap-3 mt-5">
                 {[Instagram, Twitter, Youtube].map((Icon, i) => (
-                  <motion.a
+                  <a
                     key={i}
                     href="#"
                     onClick={(e) => e.preventDefault()}
-                    whileHover={{ y: -2 }}
-                    className="h-8 w-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-indigo-500 hover:text-white transition-colors"
+                    className="h-8 w-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:border-slate-900 hover:text-slate-900 transition-colors"
                     aria-label="Social link"
                   >
                     <Icon className="h-3.5 w-3.5" />
-                  </motion.a>
+                  </a>
                 ))}
               </div>
             </div>
 
             <div>
-              <h5 className="text-white text-xs font-bold uppercase tracking-wider mb-3">Product</h5>
-              <ul className="space-y-2 text-xs">
+              <h5 className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-3">Product</h5>
+              <ul className="space-y-2.5 text-xs text-slate-600">
                 <li>
                   <button
                     onClick={() => {
                       const el = document.getElementById('how-it-works');
                       el?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="hover:text-white transition-colors cursor-pointer"
+                    className="hover:text-slate-900 transition-colors cursor-pointer"
                   >
                     How it works
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => navigate('register')} className="hover:text-white transition-colors cursor-pointer">
+                  <button onClick={() => navigate('register')} className="hover:text-slate-900 transition-colors cursor-pointer">
                     Get started
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => navigate('login')} className="hover:text-white transition-colors cursor-pointer">
+                  <button onClick={() => navigate('login')} className="hover:text-slate-900 transition-colors cursor-pointer">
                     Sign in
                   </button>
                 </li>
@@ -692,24 +708,24 @@ export function LandingPage() {
             </div>
 
             <div>
-              <h5 className="text-white text-xs font-bold uppercase tracking-wider mb-3">Community</h5>
-              <ul className="space-y-2 text-xs">
-                <li className="hover:text-white transition-colors cursor-default">Safety Center</li>
-                <li className="hover:text-white transition-colors cursor-default">Guidelines</li>
-                <li className="hover:text-white transition-colors cursor-default">Feedback</li>
+              <h5 className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-3">Community</h5>
+              <ul className="space-y-2.5 text-xs text-slate-600">
+                <li className="hover:text-slate-900 transition-colors cursor-default">Safety Center</li>
+                <li className="hover:text-slate-900 transition-colors cursor-default">Guidelines</li>
+                <li className="hover:text-slate-900 transition-colors cursor-default">Feedback</li>
               </ul>
             </div>
 
             <div>
-              <h5 className="text-white text-xs font-bold uppercase tracking-wider mb-3">Legal</h5>
-              <ul className="space-y-2 text-xs">
-                <li className="hover:text-white transition-colors cursor-default">Privacy Policy</li>
-                <li className="hover:text-white transition-colors cursor-default">Terms of Service</li>
+              <h5 className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-3">Legal</h5>
+              <ul className="space-y-2.5 text-xs text-slate-600">
+                <li className="hover:text-slate-900 transition-colors cursor-default">Privacy Policy</li>
+                <li className="hover:text-slate-900 transition-colors cursor-default">Terms of Service</li>
               </ul>
             </div>
           </div>
 
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500">
+          <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-400">
             <span>© {new Date().getFullYear()} LinguaConnect. Made for language learners, everywhere.</span>
             <span className="flex items-center gap-1.5">
               <span className="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
