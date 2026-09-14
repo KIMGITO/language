@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Bell, Globe2, CheckCheck, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Menu, Bell, Globe2, CheckCheck, PanelLeftClose, PanelLeftOpen, Sun, Moon } from 'lucide-react';
 import { useUiStore } from '../../stores/uiStore';
 import { useNotificationStore } from '../../stores/notificationStore';
 import { useProfileStore } from '../../stores/profileStore';
@@ -8,7 +8,7 @@ import { Badge } from '../ui/badge';
 import { cn } from '../../lib/utils';
 
 export function TopNavigation() {
-  const { setMobileNavOpen, navigate, sidebarCollapsed, toggleSidebar } = useUiStore();
+  const { setMobileNavOpen, navigate, sidebarCollapsed, toggleSidebar, theme, toggleTheme } = useUiStore();
   const { notifications, unreadCount, markAsRead, markAllAsRead, isOpen, setIsOpen } =
     useNotificationStore();
   const { currentProfile } = useProfileStore();
@@ -73,6 +73,17 @@ export function TopNavigation() {
 
       {/* Right Controls: Notifications & User Avatar */}
       <div className="flex items-center gap-2.5 sm:gap-3 ml-auto">
+        {/* Theme toggle */}
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className="rounded-xl p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer border border-transparent hover:border-slate-200/60 dark:hover:border-slate-700"
+          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+        </button>
+
         {/* Notifications Button & Dropdown */}
         <div className="relative" ref={popoverRef}>
           <button

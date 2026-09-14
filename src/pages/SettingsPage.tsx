@@ -6,11 +6,14 @@ import {
   LogOut,
   CheckCircle2,
   Sliders,
+  Moon,
+  Sun,
 } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { useProfileStore } from '../stores/profileStore';
 import { useSafetyStore } from '../stores/safetyStore';
 import { useUiStore } from '../stores/uiStore';
+import { cn } from '../lib/utils';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -21,7 +24,7 @@ export function SettingsPage() {
   const { user, logout } = useAuthStore();
   const { currentProfile, updateCurrentProfile } = useProfileStore();
   const { blockedUsers, unblockUser, fetchBlockedProfiles } = useSafetyStore();
-  const { navigate } = useUiStore();
+  const { navigate, theme, setTheme } = useUiStore();
 
   const [activeTab, setActiveTab] = React.useState('account');
   const [emailNotifications, setEmailNotifications] = React.useState(true);
@@ -63,6 +66,10 @@ export function SettingsPage() {
           <TabsTrigger value="privacy" className="gap-1.5 rounded-xl text-xs font-semibold">
             <Shield className="h-3.5 w-3.5" />
             <span>Privacy & Safety</span>
+          </TabsTrigger>
+          <TabsTrigger value="appearance" className="gap-1.5 rounded-xl text-xs font-semibold">
+            <Moon className="h-3.5 w-3.5" />
+            <span>Appearance</span>
           </TabsTrigger>
         </TabsList>
 
@@ -217,6 +224,61 @@ export function SettingsPage() {
                   No blocked users on your account.
                 </div>
               )}
+            </div>
+          </Card>
+        </TabsContent>
+
+        {/* Tab 4: Appearance */}
+        <TabsContent value="appearance">
+          <Card className="p-6 sm:p-8 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl shadow-sm space-y-6">
+            <div>
+              <h3 className="font-heading font-bold text-base text-slate-900 dark:text-slate-100 mb-1">
+                Theme
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Choose how LinguaConnect looks on this device.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {(
+                [
+                  { value: 'light' as const, label: 'Light', icon: Sun, desc: 'Bright and clean' },
+                  { value: 'dark' as const, label: 'Dark', icon: Moon, desc: 'Easier at night' },
+                ]
+              ).map((opt) => {
+                const isActive = theme === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setTheme(opt.value)}
+                    className={cn(
+                      'flex items-center gap-3 p-4 rounded-2xl border text-left transition-all cursor-pointer',
+                      isActive
+                        ? 'bg-teal-50 dark:bg-teal-950/30 border-teal-300 dark:border-teal-700 shadow-sm'
+                        : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        'h-10 w-10 rounded-xl flex items-center justify-center shrink-0',
+                        isActive
+                          ? 'bg-teal-500 text-white'
+                          : 'bg-white dark:bg-slate-900 text-slate-400 border border-slate-200 dark:border-slate-700'
+                      )}
+                    >
+                      <opt.icon className="h-4.5 w-4.5" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                        {opt.label}
+                      </p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">{opt.desc}</p>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </Card>
         </TabsContent>

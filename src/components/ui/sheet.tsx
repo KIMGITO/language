@@ -35,9 +35,9 @@ export function Sheet({
   if (!open) return null;
 
   const sideClasses = {
-    right: 'inset-y-0 right-0 h-full w-full max-w-md border-l border-slate-200/80 rounded-l-3xl animate-in slide-in-from-right duration-200',
-    left: 'inset-y-0 left-0 h-full w-full max-w-xs border-r border-slate-200/80 rounded-r-3xl animate-in slide-in-from-left duration-200',
-    bottom: 'inset-x-0 bottom-0 max-h-[85vh] w-full border-t border-slate-200/80 rounded-t-3xl animate-in slide-in-from-bottom duration-200',
+    right: 'inset-y-0 right-0 h-full w-full max-w-md border-l border-slate-200/80 dark:border-slate-800 rounded-l-3xl animate-in slide-in-from-right duration-200',
+    left: 'inset-y-0 left-0 h-full w-full max-w-xs border-r border-slate-200/80 dark:border-slate-800 rounded-r-3xl animate-in slide-in-from-left duration-200',
+    bottom: 'inset-x-0 bottom-0 max-h-[85vh] w-full border-t border-slate-200/80 dark:border-slate-800 rounded-t-3xl animate-in slide-in-from-bottom duration-200',
   };
 
   return (
@@ -48,19 +48,19 @@ export function Sheet({
       />
       <div
         className={cn(
-          'fixed z-50 flex flex-col bg-white p-6 shadow-2xl transition ease-in-out',
+          'fixed z-50 flex flex-col bg-white dark:bg-slate-900 p-6 shadow-2xl transition ease-in-out',
           sideClasses[side],
           className
         )}
       >
-        <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-4">
           <div>
-            {title && <h2 className="font-heading text-lg font-bold text-slate-900">{title}</h2>}
+            {title && <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-white">{title}</h2>}
             {description && <p className="text-xs text-slate-500 mt-0.5">{description}</p>}
           </div>
           <button
             onClick={() => onOpenChange(false)}
-            className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+            className="rounded-full p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
             aria-label="Close"
           >
             <X className="h-4 w-4" />

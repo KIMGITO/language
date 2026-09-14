@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Class-based dark mode (Tailwind v4 defaults dark: to prefers-color-scheme
+   unless told otherwise) — lets the theme toggle in Settings actually
+   control the app instead of only following the OS setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Outfit', 'Plus Jakarta Sans', sans-serif;
@@ -35,6 +40,12 @@
   --color-brand-gold-subtle: var(--brand-gold-subtle);
   --color-brand-gold-border: var(--brand-gold-border);
   --color-brand-gold-text: var(--brand-gold-text);
+
+  --color-brand-teal: var(--brand-teal);
+  --color-brand-teal-hover: var(--brand-teal-hover);
+  --color-brand-teal-subtle: var(--brand-teal-subtle);
+  --color-brand-teal-border: var(--brand-teal-border);
+  --color-brand-teal-text: var(--brand-teal-text);
 }
 
 :root {
@@ -60,6 +71,35 @@
   --brand-gold-subtle: #fef3c7;
   --brand-gold-border: #fde68a;
   --brand-gold-text: #92400e;
+
+  /* Chat accent — clean teal used across the messaging UI */
+  --brand-teal: #14b8a6;
+  --brand-teal-hover: #0d9488;
+  --brand-teal-subtle: #f0fdfa;
+  --brand-teal-border: #99f6e4;
+  --brand-teal-text: #0f766e;
+}
+
+.dark {
+  --color-app-bg: #0f172a;
+  --color-app-surface: #1e293b;
+  --color-app-muted: #1e293b;
+  --color-app-border: #334155;
+  --color-app-border-strong: #475569;
+  --color-app-text: #f1f5f9;
+  --color-app-text-muted: #94a3b8;
+
+  --brand-blue-subtle: #1e1b4b;
+  --brand-blue-border: #3730a3;
+  --brand-blue-text: #a5b4fc;
+
+  --brand-gold-subtle: #451a03;
+  --brand-gold-border: #92400e;
+  --brand-gold-text: #fcd34d;
+
+  --brand-teal-subtle: #042f2e;
+  --brand-teal-border: #115e59;
+  --brand-teal-text: #5eead4;
 }
 
 @layer base {
@@ -69,6 +109,7 @@
     background-color: var(--color-app-bg);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   h1, h2, h3, h4, .font-heading {
@@ -102,10 +143,20 @@
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
 }
 
+.dark .glass-card {
+  background-color: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(51, 65, 85, 0.8);
+}
+
 .glass-header {
   background-color: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.dark .glass-header {
+  background-color: rgba(15, 23, 42, 0.85);
+  border-bottom: 1px solid rgba(51, 65, 85, 0.8);
 }
 

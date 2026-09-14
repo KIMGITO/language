@@ -84,7 +84,7 @@ export function MessagesPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex flex-col overflow-hidden bg-slate-950 select-none">
+    <div className="h-[calc(100vh-4rem)] flex flex-col overflow-hidden bg-white dark:bg-slate-950 select-none">
       <div className="flex-1 flex overflow-hidden">
         {/* COLUMN 1: Leftmost Channel & Space Rail (Hidden on small mobile when chat is open) */}
         <ChatSpaceRail
@@ -133,7 +133,7 @@ export function MessagesPage() {
         ) : (
           <div
             className={cn(
-              'flex-1 flex items-center justify-center bg-slate-950',
+              'flex-1 flex items-center justify-center bg-white dark:bg-slate-950',
               !mobileShowChat ? 'hidden md:flex' : 'flex'
             )}
           >

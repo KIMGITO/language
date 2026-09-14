@@ -48,7 +48,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   }, [toastMessage, clearToast]);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row text-slate-900 font-sans antialiased">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col md:flex-row text-slate-900 dark:text-slate-100 font-sans antialiased">
       {/* Persistent Desktop Sidebar */}
       <AppSidebar />
 
@@ -61,7 +61,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
         {/* Floating Toast notification */}
         {toastMessage && (
-          <div className="fixed bottom-5 right-5 z-50 max-w-md rounded-2xl bg-white text-slate-900 p-4 shadow-2xl flex items-start gap-3 border border-slate-200/80 animate-in slide-in-from-bottom-3 duration-200">
+          <div className="fixed bottom-5 right-5 z-50 max-w-md rounded-2xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-4 shadow-2xl flex items-start gap-3 border border-slate-200/80 dark:border-slate-700 animate-in slide-in-from-bottom-3 duration-200">
             <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
             <div className="flex-1 text-xs sm:text-sm leading-relaxed font-medium">
               {toastMessage}

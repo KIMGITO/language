@@ -60,10 +60,10 @@ export function DiscoverPage() {
             <Sparkles className="h-3.5 w-3.5 text-amber-500" />
             <span>50/50 Language Compatibility Engine</span>
           </div>
-          <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
+          <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
             Discover Language Partners
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
             Filter partners by target language, proficiency level, location, and practice schedule.
           </p>
         </div>
@@ -87,7 +87,7 @@ export function DiscoverPage() {
       {/* Section Header */}
       <div className="flex items-center justify-between pt-2 mb-4">
         <div className="flex items-center gap-2">
-          <h2 className="font-heading text-lg sm:text-xl font-bold text-slate-900">
+          <h2 className="font-heading text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
             {activeLanguage?.name || 'All'} Native Partners
           </h2>
           <Badge variant="blue" className="text-xs">

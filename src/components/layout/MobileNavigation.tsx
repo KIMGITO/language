@@ -32,7 +32,7 @@ export function MobileNavigation() {
                 navigate('profile');
                 setMobileNavOpen(false);
               }}
-              className="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-r from-indigo-50 to-violet-50 border border-indigo-100 mb-6 cursor-pointer"
+              className="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-r from-indigo-50 to-violet-50 dark:from-indigo-950/40 dark:to-violet-950/40 border border-indigo-100 dark:border-indigo-900 mb-6 cursor-pointer"
             >
               <Avatar
                 src={currentProfile.avatar_url}
@@ -41,10 +41,10 @@ export function MobileNavigation() {
                 isOnline={true}
               />
               <div className="min-w-0">
-                <p className="font-heading font-bold text-sm text-slate-900 truncate">
+                <p className="font-heading font-bold text-sm text-slate-900 dark:text-white truncate">
                   {currentProfile.display_name}
                 </p>
-                <p className="text-xs text-slate-500 truncate">
+                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                   {currentProfile.country}
                 </p>
               </div>
@@ -63,7 +63,7 @@ export function MobileNavigation() {
                 'w-full flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all text-left cursor-pointer',
                 currentRoute === 'settings'
                   ? 'bg-indigo-600 text-white font-bold shadow-sm shadow-indigo-500/25'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
               )}
             >
               <Settings className={cn('h-5 w-5', currentRoute === 'settings' ? 'text-white' : 'text-slate-400')} />

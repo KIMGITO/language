@@ -48,7 +48,7 @@ export function AppSidebar() {
   return (
     <aside
       className={cn(
-        'hidden md:flex flex-col justify-between h-screen sticky top-0 bg-white/90 backdrop-blur-md border-r border-slate-200/80 transition-all duration-200 z-30 select-none shadow-xs',
+        'hidden md:flex flex-col justify-between h-screen sticky top-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-r border-slate-200/80 dark:border-slate-800 transition-all duration-200 z-30 select-none shadow-xs',
         sidebarCollapsed ? 'w-20 px-2 py-4' : 'w-64 px-4 py-5'
       )}
     >
@@ -65,7 +65,7 @@ export function AppSidebar() {
 
             {!sidebarCollapsed && (
               <div>
-                <span className="font-heading font-bold text-lg text-slate-900 tracking-tight leading-none block">
+                <span className="font-heading font-bold text-lg text-slate-900 dark:text-white tracking-tight leading-none block">
                   LinguaConnect
                 </span>
                 <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest block mt-1">
@@ -94,7 +94,7 @@ export function AppSidebar() {
                     : 'justify-between px-3.5 py-2.5 rounded-xl',
                   isActive
                     ? 'text-white font-bold'
-                    : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
+                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100/80 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white'
                 )}
                 title={sidebarCollapsed ? item.label : undefined}
               >
@@ -132,11 +132,11 @@ export function AppSidebar() {
       </div>
 
       {/* User profile footer */}
-      <div className="pt-4 border-t border-slate-100">
+      <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
         {currentProfile && (
           <div
             className={cn(
-              'flex items-center rounded-2xl p-2 transition-all hover:bg-slate-100/80 border border-transparent hover:border-slate-200/60',
+              'flex items-center rounded-2xl p-2 transition-all hover:bg-slate-100/80 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-200/60 dark:hover:border-slate-700',
               sidebarCollapsed ? 'justify-center' : 'justify-between'
             )}
           >
@@ -152,7 +152,7 @@ export function AppSidebar() {
               />
               {!sidebarCollapsed && (
                 <div className="min-w-0">
-                  <p className="font-heading font-bold text-xs text-slate-900 truncate">
+                  <p className="font-heading font-bold text-xs text-slate-900 dark:text-slate-100 truncate">
                     {currentProfile.display_name}
                   </p>
                   <p className="text-[10px] text-slate-400 truncate">
@@ -169,7 +169,7 @@ export function AppSidebar() {
                   await logout();
                   navigate('landing');
                 }}
-                className="p-1.5 text-slate-400 hover:text-rose-600 rounded-xl transition-colors cursor-pointer"
+                className="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-xl transition-colors cursor-pointer"
                 title="Log out"
               >
                 <LogOut className="h-4 w-4" />

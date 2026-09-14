@@ -37,7 +37,7 @@ export function MobileTabBar() {
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 h-16 bg-white/90 backdrop-blur-md border-t border-slate-200/80 flex items-stretch shadow-[0_-4px_16px_-4px_rgba(15,23,42,0.08)]">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 h-16 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800 flex items-stretch shadow-[0_-4px_16px_-4px_rgba(15,23,42,0.08)]">
       {tabs.map((tab) => {
         const isActive = currentRoute === tab.route;
         return (
@@ -60,7 +60,7 @@ export function MobileTabBar() {
               animate={isActive ? { y: -1, scale: 1.08 } : { y: 0, scale: 1 }}
               transition={{ type: 'spring', stiffness: 400, damping: 20 }}
             >
-              <span className={cn(isActive ? 'text-indigo-600' : 'text-slate-400')}>
+              <span className={cn(isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400')}>
                 {tab.icon}
               </span>
               {tab.badge !== undefined && tab.badge > 0 && (
@@ -72,7 +72,7 @@ export function MobileTabBar() {
             <span
               className={cn(
                 'text-[10px] font-semibold',
-                isActive ? 'text-indigo-600' : 'text-slate-400'
+                isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'
               )}
             >
               {tab.label}

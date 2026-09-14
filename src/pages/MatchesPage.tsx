@@ -44,10 +44,10 @@ export function MatchesPage() {
           <Sparkles className="h-3.5 w-3.5 text-amber-500" />
           <span>Matches & Connections Overview</span>
         </div>
-        <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
+        <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
           Your Language Matches
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 mt-1">
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
           Organized by mutual exchange, practice partner availability, or learners seeking help.
         </p>
       </div>

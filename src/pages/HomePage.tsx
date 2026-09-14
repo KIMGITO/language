@@ -54,10 +54,10 @@ export function HomePage() {
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 pb-6 border-b border-slate-200/80">
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
          
-          <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
+          <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
             Welcome back, {currentProfile?.display_name?.split(' ')[0] || 'Learner'} 
           </h1>
-          <p className="text-sm text-slate-500 mt-1.5">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5">
             Connect with native speakers, discover topics, and boost your language fluency.
           </p>
         </motion.div>
@@ -88,7 +88,7 @@ export function HomePage() {
           {targetLang && (
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="font-heading font-bold text-base text-slate-900">
+                <h2 className="font-heading font-bold text-base text-slate-900 dark:text-white">
                   Active Practice Focus
                 </h2>
                 <button
@@ -114,10 +114,10 @@ export function HomePage() {
           <div>
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="font-heading font-bold text-lg text-slate-900">
+                <h2 className="font-heading font-bold text-lg text-slate-900 dark:text-white">
                   Recommended Language Partners
                 </h2>
-                <p className="text-xs text-slate-500">Handpicked based on your native & target languages</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Handpicked based on your native & target languages</p>
               </div>
               <Button
                 variant="ghost"
@@ -155,10 +155,10 @@ export function HomePage() {
                 Conversation Prompt of the Day
               </span>
             </div>
-            <h3 className="font-heading font-bold text-slate-900 text-base mb-1.5">
+            <h3 className="font-heading font-bold text-slate-900 dark:text-white text-base mb-1.5">
               {dailyTopic.title}
             </h3>
-            <p className="text-xs text-slate-600 mb-4 italic leading-relaxed bg-white/80 p-3 rounded-xl border border-amber-100">
+            <p className="text-xs text-slate-600 dark:text-slate-300 mb-4 italic leading-relaxed bg-white/80 dark:bg-slate-800/60 p-3 rounded-xl border border-amber-100 dark:border-amber-900/40">
               "{dailyTopic.prompt}"
             </p>
             <Button
@@ -173,9 +173,9 @@ export function HomePage() {
           </Card>
 
           {/* Active Conversations */}
-          <Card className="p-5 border-slate-200/80 bg-white rounded-2xl shadow-sm">
+          <Card className="p-5 border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-heading font-bold text-slate-900 text-sm flex items-center gap-2">
+              <h3 className="font-heading font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
                 <MessageSquare className="h-4 w-4 text-indigo-600" />
                 <span>Recent Conversations</span>
               </h3>
@@ -210,10 +210,10 @@ export function HomePage() {
                         size="sm"
                       />
                       <div className="min-w-0">
-                        <p className="font-heading font-bold text-xs text-slate-900 truncate group-hover:text-indigo-600 transition-colors">
+                        <p className="font-heading font-bold text-xs text-slate-900 dark:text-white truncate group-hover:text-indigo-600 transition-colors">
                           {partner?.display_name}
                         </p>
-                        <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
                           {convo.last_message ? convo.last_message.content : 'Active conversation'}
                         </p>
                       </div>

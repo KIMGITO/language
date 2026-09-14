@@ -36,7 +36,7 @@ export function ChatSpaceRail({
   return (
     <aside
       className={cn(
-        'w-16 bg-slate-900 border-r border-slate-800/80 text-white flex flex-col items-center justify-between py-4 select-none shrink-0 z-10',
+        'w-16 bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white flex flex-col items-center justify-between py-4 select-none shrink-0 z-10',
         className
       )}
     >
@@ -47,12 +47,12 @@ export function ChatSpaceRail({
           type="button"
           onClick={() => onSelectSpace('all')}
           title="LinguaConnect"
-          className="h-11 w-11 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 text-white flex items-center justify-center font-heading font-black text-lg shadow-lg shadow-indigo-500/25 transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+          className="h-11 w-11 rounded-2xl bg-teal-500 text-white flex items-center justify-center font-heading font-black text-lg shadow-lg shadow-teal-500/25 transition-transform hover:scale-105 active:scale-95 cursor-pointer"
         >
           <span className="font-extrabold tracking-tighter">L</span>
         </button>
 
-        <div className="h-[1px] w-8 bg-slate-800 my-0.5" />
+        <div className="h-[1px] w-8 bg-slate-100 dark:bg-slate-800 my-0.5" />
 
         {/* Vertical Space Shortcuts */}
         <div className="flex flex-col items-center gap-2.5 w-full">
@@ -67,20 +67,20 @@ export function ChatSpaceRail({
                 className={cn(
                   'relative h-10 w-10 rounded-2xl flex items-center justify-center text-xs font-bold transition-all cursor-pointer border',
                   isActive
-                    ? 'bg-indigo-600 text-white border-indigo-500 shadow-md shadow-indigo-600/30'
-                    : 'bg-slate-800/60 text-slate-400 border-slate-800 hover:bg-slate-800 hover:text-slate-100'
+                    ? 'bg-teal-500 text-white border-teal-400 shadow-md shadow-teal-500/30'
+                    : 'bg-slate-50 dark:bg-slate-800/60 text-slate-400 border-slate-100 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-100'
                 )}
               >
                 <span className="uppercase text-[11px] tracking-tight">{space.short}</span>
 
                 {/* Left Active indicator bar */}
                 {isActive && (
-                  <span className="absolute -left-2 top-2 bottom-2 w-1 bg-indigo-500 rounded-r-full shadow-sm" />
+                  <span className="absolute -left-2 top-2 bottom-2 w-1 bg-teal-500 rounded-r-full shadow-sm" />
                 )}
 
                 {/* Badge */}
                 {space.badge && space.badge > 0 && !isActive && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 bg-amber-500 text-slate-950 text-[10px] font-black flex items-center justify-center rounded-full border border-slate-900">
+                  <span className="absolute -top-1 -right-1 h-4 w-4 bg-amber-500 text-white text-[10px] font-black flex items-center justify-center rounded-full border border-white dark:border-slate-900">
                     {space.badge}
                   </span>
                 )}
@@ -95,8 +95,8 @@ export function ChatSpaceRail({
             className={cn(
               'h-10 w-10 rounded-2xl flex items-center justify-center text-xs font-bold transition-all cursor-pointer border',
               activeSpaceId === 'info'
-                ? 'bg-indigo-600 text-white border-indigo-500'
-                : 'bg-slate-800/60 text-slate-400 border-slate-800 hover:bg-slate-800 hover:text-slate-100'
+                ? 'bg-teal-500 text-white border-teal-400'
+                : 'bg-slate-50 dark:bg-slate-800/60 text-slate-400 border-slate-100 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-100'
             )}
           >
             <HelpCircle className="h-4 w-4" />
@@ -110,7 +110,7 @@ export function ChatSpaceRail({
           type="button"
           onClick={onNewChat}
           title="New conversation / Find partner"
-          className="h-11 w-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 flex items-center justify-center shadow-lg shadow-amber-500/20 transition-all hover:scale-105 active:scale-95 cursor-pointer border-0"
+          className="h-11 w-11 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white flex items-center justify-center shadow-lg shadow-amber-500/20 transition-all hover:scale-105 active:scale-95 cursor-pointer border-0"
           aria-label="New chat"
         >
           <Plus className="h-6 w-6 stroke-[3]" />

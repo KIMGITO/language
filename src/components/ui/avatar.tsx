@@ -41,7 +41,7 @@ export function Avatar({
     <div className={cn('relative inline-flex shrink-0 rounded-full', className)} {...props}>
       <div
         className={cn(
-          'relative flex overflow-hidden rounded-full border border-slate-200 bg-gradient-to-br from-indigo-50 to-violet-100 items-center justify-center font-bold text-indigo-600 select-none shadow-sm',
+          'relative flex overflow-hidden rounded-full border border-slate-200 dark:border-slate-700 bg-gradient-to-br from-indigo-50 to-violet-100 dark:from-indigo-950/40 dark:to-violet-950/40 items-center justify-center font-bold text-indigo-600 dark:text-indigo-300 select-none shadow-sm',
           sizeClasses[size]
         )}
       >
@@ -61,7 +61,7 @@ export function Avatar({
       {isOnline !== undefined && (
         <span
           className={cn(
-            'absolute bottom-0 right-0 rounded-full ring-white shadow-sm',
+            'absolute bottom-0 right-0 rounded-full ring-white dark:ring-slate-900 shadow-sm',
             isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300',
             dotSizes[size]
           )}
