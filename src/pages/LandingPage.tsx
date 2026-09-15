@@ -117,7 +117,7 @@ function LanguageMarquee() {
         {loopItems.map((lang, i) => (
           <span
             key={`${lang.id}-${i}`}
-            className="flex items-center gap-1.5 text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-500 whitespace-nowrap"
+            className="flex items-center gap-1.5 text-sm font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap"
           >
             <span className="text-lg">{lang.flag}</span>
             {lang.name}
@@ -335,13 +335,13 @@ export function LandingPage() {
                   />
                 ))}
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500 font-medium">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                 <span className="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1.5 align-middle animate-pulse" />
                 <Counter value={2400} suffix="+" /> people online right now
               </p>
             </motion.div>
 
-            <div className="pt-1 flex flex-wrap gap-x-6 gap-y-2 text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500 font-medium">
+            <div className="pt-1 flex flex-wrap gap-x-6 gap-y-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                 <span>Verified profiles</span>
@@ -386,7 +386,7 @@ export function LandingPage() {
                   <Avatar src={SOCIAL_FACES[3]} fallback="M" size="md" isOnline={true} />
                   <div>
                     <h4 className="font-heading font-bold text-sm text-slate-900 dark:text-white">Maria Valle</h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">Madrid, Spain</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Madrid, Spain</p>
                   </div>
                 </div>
                 <motion.div
@@ -473,7 +473,7 @@ export function LandingPage() {
               <p className="font-heading text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
                 <Counter value={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-500 mt-1">{stat.label}</p>
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-1">{stat.label}</p>
             </Reveal>
           ))}
         </div>
@@ -487,7 +487,7 @@ export function LandingPage() {
             <h2 className="font-heading text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
               Four steps. Zero awkwardness.
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 dark:text-slate-500 text-sm mt-2">
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">
               Set up your profile once, then just start talking.
             </p>
           </Reveal>
@@ -507,7 +507,7 @@ export function LandingPage() {
                   <h3 className="font-heading font-bold text-base text-slate-900 dark:text-white mb-1.5">
                     {step.title}
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500 leading-relaxed">{step.body}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{step.body}</p>
                 </Card>
               </Reveal>
             ))}
@@ -555,7 +555,7 @@ export function LandingPage() {
             <h2 className="font-heading text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
               Never run out of things to say
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 dark:text-slate-500 text-xs mt-1">
+            <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">
               Built-in topic starters so the first message is never the hard part.
             </p>
           </Reveal>
@@ -600,7 +600,7 @@ export function LandingPage() {
                 <h3 className="font-heading text-2xl font-bold text-slate-900 dark:text-white mb-2">
                   Real connections, not weird DMs
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500 leading-relaxed">
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                   Built for genuine language exchange, with the tools to keep
                   it that way.
                 </p>
@@ -618,7 +618,7 @@ export function LandingPage() {
                     <h4 className="font-heading font-bold text-xs text-slate-900 dark:text-white mb-0.5">
                       {item.title}
                     </h4>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 dark:text-slate-500 leading-relaxed">{item.body}</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">{item.body}</p>
                   </div>
                 ))}
               </div>
@@ -672,7 +672,7 @@ export function LandingPage() {
                 </div>
                 <span className="font-heading font-bold text-slate-900 dark:text-white text-base">LinguaConnect</span>
               </div>
-              <p className="text-xs leading-relaxed max-w-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">
+              <p className="text-xs leading-relaxed max-w-xs text-slate-500 dark:text-slate-400">
                 Real people, real conversations, real fluency. Made for
                 learners who'd rather chat than cram.
               </p>
