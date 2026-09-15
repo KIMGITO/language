@@ -1,5 +1,5 @@
 import React from 'react';
-import { Globe2, Lock, Mail, User, Sparkles } from 'lucide-react';
+import { Globe2, Lock, Mail, User, Sparkles, Sun, Moon } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { useUiStore } from '../stores/uiStore';
 import { Button } from '../components/ui/button';
@@ -9,7 +9,7 @@ import { SocialAuthButtons } from '../components/common/SocialAuthButtons';
 
 export function RegisterPage() {
   const { register, error, clearError, loading } = useAuthStore();
-  const { navigate } = useUiStore();
+  const { navigate, theme, toggleTheme } = useUiStore();
 
   const [displayName, setDisplayName] = React.useState('');
   const [email, setEmail] = React.useState('');
@@ -42,7 +42,16 @@ export function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
+      <button
+        type="button"
+        onClick={toggleTheme}
+        className="absolute top-5 right-5 rounded-xl p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+        aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+        title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      >
+        {theme === 'dark' ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
+      </button>
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center mb-6">
         <div
           onClick={() => navigate('landing')}
