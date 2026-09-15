@@ -460,9 +460,9 @@ export function LandingPage() {
       {/* Trending languages ticker */}
       <LanguageMarquee />
 
-      {/* Live Stats */}
-      <section className="py-14 px-4 sm:px-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800/80">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+      {/* Live Stats — stark, minimal, no gradients */}
+      <section className="py-16 px-4 sm:px-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800/80">
+        <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-6 text-center sm:divide-x divide-slate-100 dark:divide-slate-800">
           {[
             { value: 48000, suffix: '+', label: 'People learning' },
             { value: 120, suffix: '+', label: 'Countries' },
@@ -470,45 +470,42 @@ export function LandingPage() {
             { value: 49, suffix: '/10', label: 'Loved by users' },
           ].map((stat, i) => (
             <Reveal key={stat.label} delay={i * 0.08}>
-              <p className="font-heading text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+              <p className="font-heading text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
                 <Counter value={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-1">{stat.label}</p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mt-2">{stat.label}</p>
             </Reveal>
           ))}
         </div>
       </section>
 
-      {/* How it works */}
-      <section id="how-it-works" className="py-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800/80 px-4 sm:px-6">
+      {/* How it works — minimal numbered layout */}
+      <section id="how-it-works" className="py-20 sm:py-28 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800/80 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <Reveal className="text-center max-w-xl mx-auto mb-12">
-            <Badge variant="blue" className="mb-2">It's easy</Badge>
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
+          <Reveal className="text-center max-w-xl mx-auto mb-16">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3">
+              It's easy
+            </p>
+            <h2 className="font-heading text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
               Four steps. Zero awkwardness.
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">
-              Set up your profile once, then just start talking.
-            </p>
           </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-10 md:gap-y-0">
             {[
               { n: '01', title: 'Make your profile', body: "Native language, what you're learning, your vibe — takes two minutes." },
               { n: '02', title: 'Get matched', body: 'Our algorithm pairs you with people who want exactly what you want.' },
               { n: '03', title: 'Start chatting', body: 'Break the ice with a topic starter, or just say hi. No script needed.' },
               { n: '04', title: 'Keep the streak', body: 'Chat daily, level up your fluency, and actually make a friend.' },
             ].map((step, i) => (
-              <Reveal key={step.n} delay={i * 0.1}>
-                <Card className="p-6 h-full text-left border border-slate-200 dark:border-slate-800/80 rounded-2xl bg-slate-50 dark:bg-slate-950/50 hover:bg-white dark:hover:bg-slate-800/60 hover:border-indigo-200 hover:-translate-y-1 transition-all duration-300 shadow-xs hover:shadow-md">
-                  <div className="h-10 w-10 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white flex items-center justify-center font-bold mb-4 font-heading text-sm shadow-sm">
-                    {step.n}
-                  </div>
-                  <h3 className="font-heading font-bold text-base text-slate-900 dark:text-white mb-1.5">
-                    {step.title}
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{step.body}</p>
-                </Card>
+              <Reveal key={step.n} delay={i * 0.1} className="border-t-2 border-slate-900 dark:border-white pt-5 text-left">
+                <p className="font-heading text-sm font-bold text-slate-300 dark:text-slate-600 mb-3">
+                  {step.n}
+                </p>
+                <h3 className="font-heading font-bold text-base text-slate-900 dark:text-white mb-1.5">
+                  {step.title}
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{step.body}</p>
               </Reveal>
             ))}
           </div>
@@ -591,11 +588,11 @@ export function LandingPage() {
       {/* Safety / community section */}
       <section className="py-16 px-4 sm:px-6 max-w-5xl mx-auto w-full">
         <Reveal>
-          <div className="rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 p-8 sm:p-10 shadow-lg">
+          <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 sm:p-10">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
               <div className="md:col-span-4 text-left">
-                <div className="h-12 w-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 mb-4 border border-indigo-100">
-                  <ShieldCheck className="h-6 w-6 text-indigo-600" />
+                <div className="h-12 w-12 rounded-2xl bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-slate-900 mb-4">
+                  <ShieldCheck className="h-6 w-6" />
                 </div>
                 <h3 className="font-heading text-2xl font-bold text-slate-900 dark:text-white mb-2">
                   Real connections, not weird DMs
