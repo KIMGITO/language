@@ -126,7 +126,7 @@ export function OnboardingPage() {
   const progressPercent = (step / totalSteps) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-slate-50 flex items-center justify-center p-4 sm:p-6 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-slate-50 dark:from-slate-950 dark:via-indigo-950/20 dark:to-slate-950 flex items-center justify-center p-4 sm:p-6 font-sans">
       <div className="w-full max-w-xl space-y-6">
         {/* Brand header */}
         <div className="text-center space-y-2">
@@ -134,41 +134,41 @@ export function OnboardingPage() {
             <Globe2 className="h-4 w-4 text-indigo-600" />
             <span>LinguaConnect Onboarding</span>
           </div>
-          <h1 className="font-heading text-2xl sm:text-3xl font-bold text-slate-900">
+          <h1 className="font-heading text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
             Customize Your Profile
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
             Set your target languages, exchange goals, and topics to get matched instantly.
           </p>
         </div>
 
         {/* Progress Bar */}
         <div className="space-y-1.5 px-1">
-          <div className="flex justify-between text-xs font-semibold text-slate-500">
+          <div className="flex justify-between text-xs font-semibold text-slate-500 dark:text-slate-400">
             <span>Step {step} of {totalSteps}</span>
             <span className="text-indigo-600">{Math.round(progressPercent)}% completed</span>
           </div>
-          <Progress value={progressPercent} className="h-2 rounded-full bg-slate-200" />
+          <Progress value={progressPercent} className="h-2 rounded-full bg-slate-200 dark:bg-slate-700" />
         </div>
 
         {/* Card Container */}
-        <Card className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-xl">
+        <Card className="rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8 shadow-xl">
           <CardContent className="p-0">
             {/* Step 1: Native Language */}
             {step === 1 && (
               <div className="space-y-4 animate-in fade-in duration-150">
-                <div className="border-b border-slate-100 pb-3">
-                  <h2 className="font-heading text-lg font-bold text-slate-900">
+                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+                  <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-white">
                     What is your native language?
                   </h2>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     Select your mother tongue or main spoken language.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-72 overflow-y-auto pr-1">
                   {availableLanguages.length === 0 && (
-                    <p className="col-span-full text-xs text-slate-400 py-6 text-center">
+                    <p className="col-span-full text-xs text-slate-400 dark:text-slate-500 py-6 text-center">
                       Loading languages...
                     </p>
                   )}
@@ -182,8 +182,8 @@ export function OnboardingPage() {
                         className={cn(
                           'p-3 rounded-2xl border text-left cursor-pointer transition-all duration-150 flex items-center gap-2.5',
                           isSelected
-                            ? 'bg-indigo-50 border-indigo-500 text-indigo-900 shadow-2xs font-bold'
-                            : 'bg-white border-slate-200/80 text-slate-700 hover:bg-slate-50'
+                            ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-500 text-indigo-900 dark:text-indigo-300 shadow-2xs font-bold'
+                            : 'bg-white dark:bg-slate-800 border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
                         )}
                       >
                         <span className="text-xl">{lang.flag}</span>
@@ -200,11 +200,11 @@ export function OnboardingPage() {
             {/* Step 2: Learning Language */}
             {step === 2 && (
               <div className="space-y-4 animate-in fade-in duration-150">
-                <div className="border-b border-slate-100 pb-3">
-                  <h2 className="font-heading text-lg font-bold text-slate-900">
+                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+                  <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-white">
                     Which language are you learning?
                   </h2>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     Choose the target language you want to practice in class & daily life.
                   </p>
                 </div>
@@ -220,8 +220,8 @@ export function OnboardingPage() {
                         className={cn(
                           'p-3 rounded-2xl border text-left cursor-pointer transition-all duration-150 flex items-center gap-2.5',
                           isSelected
-                            ? 'bg-indigo-50 border-indigo-500 text-indigo-900 shadow-2xs font-bold'
-                            : 'bg-white border-slate-200/80 text-slate-700 hover:bg-slate-50'
+                            ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-500 text-indigo-900 dark:text-indigo-300 shadow-2xs font-bold'
+                            : 'bg-white dark:bg-slate-800 border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
                         )}
                       >
                         <span className="text-xl">{lang.flag}</span>
@@ -238,11 +238,11 @@ export function OnboardingPage() {
             {/* Step 3: Proficiency Level */}
             {step === 3 && (
               <div className="space-y-4 animate-in fade-in duration-150">
-                <div className="border-b border-slate-100 pb-3">
-                  <h2 className="font-heading text-lg font-bold text-slate-900">
+                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+                  <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-white">
                     What is your current level?
                   </h2>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     Be honest so we can match you with compatible exchange partners.
                   </p>
                 </div>
@@ -259,7 +259,7 @@ export function OnboardingPage() {
                           'p-3.5 rounded-2xl border text-left cursor-pointer transition-all duration-150',
                           isSelected
                             ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white border-transparent shadow-md'
-                            : 'bg-white border-slate-200/80 text-slate-800 hover:bg-slate-50'
+                            : 'bg-white dark:bg-slate-800 border-slate-200/80 dark:border-slate-700 text-slate-800 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
                         )}
                       >
                         <div className="flex items-center justify-between">
@@ -286,11 +286,11 @@ export function OnboardingPage() {
             {/* Step 4: Practice Interests & Topics */}
             {step === 4 && (
               <div className="space-y-4 animate-in fade-in duration-150">
-                <div className="border-b border-slate-100 pb-3">
-                  <h2 className="font-heading text-lg font-bold text-slate-900">
+                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+                  <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-white">
                     What topics interest you?
                   </h2>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     Select 2 to 8 topics you'd love to chat about with partners.
                   </p>
                 </div>
@@ -307,7 +307,7 @@ export function OnboardingPage() {
                           'px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer border',
                           isSelected
                             ? 'bg-indigo-600 text-white border-transparent shadow-2xs font-bold'
-                            : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200/80'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-200/80 dark:hover:bg-slate-700'
                         )}
                       >
                         #{topic.name}
@@ -321,11 +321,11 @@ export function OnboardingPage() {
             {/* Step 5: Schedule & Availability */}
             {step === 5 && (
               <div className="space-y-4 animate-in fade-in duration-150">
-                <div className="border-b border-slate-100 pb-3">
-                  <h2 className="font-heading text-lg font-bold text-slate-900">
+                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+                  <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-white">
                     When are you usually available?
                   </h2>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     Helps us find partners with matching study schedules.
                   </p>
                 </div>
@@ -341,8 +341,8 @@ export function OnboardingPage() {
                         className={cn(
                           'w-full p-3.5 rounded-2xl border text-left cursor-pointer transition-all duration-150 flex items-start gap-3',
                           isSelected
-                            ? 'bg-indigo-50 border-indigo-500 text-indigo-900 shadow-2xs font-bold'
-                            : 'bg-white border-slate-200/80 text-slate-700 hover:bg-slate-50'
+                            ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-500 text-indigo-900 dark:text-indigo-300 shadow-2xs font-bold'
+                            : 'bg-white dark:bg-slate-800 border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
                         )}
                       >
                         <Calendar
@@ -353,7 +353,7 @@ export function OnboardingPage() {
                         />
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-slate-900">{opt.label}</span>
+                            <span className="text-xs font-bold text-slate-900 dark:text-white">{opt.label}</span>
                             {isSelected && <Check className="h-4 w-4 text-indigo-600 stroke-[2.5]" />}
                           </div>
                         </div>
@@ -365,7 +365,7 @@ export function OnboardingPage() {
             )}
 
             {/* Navigation buttons */}
-            <div className="flex items-center justify-between gap-3 pt-6 mt-6 border-t border-slate-100">
+            <div className="flex items-center justify-between gap-3 pt-6 mt-6 border-t border-slate-100 dark:border-slate-800">
               {step > 1 ? (
                 <Button
                   variant="outline"

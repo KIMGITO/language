@@ -65,7 +65,7 @@ export function PartnerCard({
       transition={{ duration: 0.35, delay: Math.min(index, 8) * 0.06, ease: 'easeOut' }}
       whileHover={{ y: -4 }}
       className={cn(
-        'group relative rounded-2xl border border-slate-200/80 bg-white shadow-sm hover:shadow-xl hover:border-indigo-200 transition-[box-shadow,border-color] duration-300 flex flex-col justify-between overflow-hidden',
+        'group relative rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-xl hover:border-indigo-200 dark:hover:border-slate-700 transition-[box-shadow,border-color] duration-300 flex flex-col justify-between overflow-hidden',
         className
       )}
     >
@@ -95,11 +95,11 @@ export function PartnerCard({
             <div className="pb-1">
               <h3
                 onClick={() => onViewProfile(partner.id)}
-                className="font-heading text-base font-bold text-slate-900 hover:text-indigo-600 cursor-pointer transition-colors leading-tight"
+                className="font-heading text-base font-bold text-slate-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer transition-colors leading-tight"
               >
                 {partner.display_name}
               </h3>
-              <div className="flex items-center gap-1 text-xs text-slate-500 mt-0.5 font-medium">
+              <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
                 <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
                 <span>{partner.country}</span>
                 {partner.last_active && (
@@ -116,7 +116,7 @@ export function PartnerCard({
             trigger={
               <button
                 type="button"
-                className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
+                className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors cursor-pointer"
                 aria-label="More options"
               >
                 <MoreVertical className="h-4 w-4" />
@@ -145,14 +145,14 @@ export function PartnerCard({
         )}
 
         {/* Spoken Languages & Learning */}
-        <div className="space-y-2 mb-4 text-xs bg-slate-50/70 rounded-xl p-3 border border-slate-100">
+        <div className="space-y-2 mb-4 text-xs bg-slate-50/70 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700">
           <div className="flex items-baseline gap-2">
             <span className="font-bold text-slate-400 text-[10px] w-14 shrink-0 uppercase tracking-wider">
               Speaks
             </span>
             <div className="flex items-center gap-1.5 flex-wrap">
               {partner.native_languages.map((nl) => (
-                <div key={nl.id} className="flex items-center gap-1.5 bg-white px-2 py-1 rounded-lg border border-slate-200/60 shadow-2xs">
+                <div key={nl.id} className="flex items-center gap-1.5 bg-white dark:bg-slate-900 px-2 py-1 rounded-lg border border-slate-200/60 dark:border-slate-700 shadow-2xs">
                   <LanguageBadge language={nl.language} showFlag />
                   <LanguageLevel level={nl.proficiency} />
                 </div>
@@ -181,7 +181,7 @@ export function PartnerCard({
         {topReasons.length > 0 && (
           <div className="space-y-1 mb-4">
             {topReasons.map((reason, i) => (
-              <div key={i} className="flex items-start gap-1.5 text-[11px] text-slate-500">
+              <div key={i} className="flex items-start gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
                 <span className="leading-snug">{reason}</span>
               </div>
@@ -193,7 +193,7 @@ export function PartnerCard({
         {partner.interests && partner.interests.length > 0 && (
           <div className="mb-3 flex flex-wrap gap-1.5">
             {partner.interests.slice(0, 3).map((interest, i) => (
-              <span key={i} className="text-[11px] font-medium text-slate-600 bg-slate-100/80 px-2.5 py-0.5 rounded-md">
+              <span key={i} className="text-[11px] font-medium text-slate-600 dark:text-slate-300 bg-slate-100/80 dark:bg-slate-800 px-2.5 py-0.5 rounded-md">
                 #{interest}
               </span>
             ))}
@@ -209,7 +209,7 @@ export function PartnerCard({
       </div>
 
       {/* Footer Action Buttons */}
-      <div className="p-4 pt-3 bg-slate-50/50 border-t border-slate-100 flex items-center gap-2">
+      <div className="p-4 pt-3 bg-slate-50/50 dark:bg-slate-800/40 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2">
         <Button
           variant="outline"
           size="sm"

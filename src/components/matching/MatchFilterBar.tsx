@@ -53,7 +53,7 @@ export function MatchFilterBar({
     <div className="space-y-3 mb-6">
       {/* Quick Language Selector */}
       <div className="glass-card rounded-2xl p-4 sm:p-5">
-        <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+        <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3">
           Practice Language
         </label>
         
@@ -69,7 +69,7 @@ export function MatchFilterBar({
                   'inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-150 cursor-pointer border',
                   isSelected
                     ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white border-transparent shadow-sm shadow-indigo-500/25'
-                    : 'bg-white/80 text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-slate-300'
+                    : 'bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
                 )}
               >
                 <span className="text-base select-none">{lang.flag || '🌐'}</span>
@@ -128,7 +128,7 @@ export function MatchFilterBar({
               variant="ghost"
               size="sm"
               onClick={onReset}
-              className="gap-1 text-xs text-slate-500 hover:text-slate-900 rounded-xl"
+              className="gap-1 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-xl"
               title="Reset all filters"
             >
               <RotateCcw className="h-3 w-3" />
@@ -139,9 +139,9 @@ export function MatchFilterBar({
 
         {/* Expandable Optional Filters */}
         {showAdvanced && (
-          <div className="pt-3.5 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 animate-in fade-in duration-150">
+          <div className="pt-3.5 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 animate-in fade-in duration-150">
             <div>
-              <label className="block text-[11px] font-bold text-slate-500 mb-1">
+              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">
                 Proficiency
               </label>
               <Select
@@ -159,7 +159,7 @@ export function MatchFilterBar({
             </div>
 
             <div>
-              <label className="block text-[11px] font-bold text-slate-500 mb-1">
+              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">
                 Country
               </label>
               <Select
@@ -176,7 +176,7 @@ export function MatchFilterBar({
             </div>
 
             <div>
-              <label className="block text-[11px] font-bold text-slate-500 mb-1">
+              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">
                 Interest
               </label>
               <Select
@@ -194,7 +194,7 @@ export function MatchFilterBar({
             </div>
 
             <div>
-              <label className="block text-[11px] font-bold text-slate-500 mb-1">
+              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">
                 Availability
               </label>
               <Select
