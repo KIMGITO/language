@@ -14,6 +14,8 @@ import {
   Youtube,
   Zap,
   Ban,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import { useUiStore } from '../stores/uiStore';
 import { LANGUAGES, CONVERSATION_TOPICS } from '../data/mockData';
@@ -104,7 +106,7 @@ function Counter({ value, suffix = '', duration = 1.4 }: { value: number; suffix
 function LanguageMarquee() {
   const loopItems = [...LANGUAGES, ...LANGUAGES];
   return (
-    <div className="relative overflow-hidden py-3 border-y border-slate-200/70 bg-white/70 backdrop-blur-sm">
+    <div className="relative overflow-hidden py-3 border-y border-slate-200 dark:border-slate-800/70 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm">
       <div className="pointer-events-none absolute inset-y-0 left-0 w-16 sm:w-28 bg-gradient-to-r from-slate-50 to-transparent z-10" />
       <div className="pointer-events-none absolute inset-y-0 right-0 w-16 sm:w-28 bg-gradient-to-l from-slate-50 to-transparent z-10" />
       <motion.div
@@ -115,7 +117,7 @@ function LanguageMarquee() {
         {loopItems.map((lang, i) => (
           <span
             key={`${lang.id}-${i}`}
-            className="flex items-center gap-1.5 text-sm font-semibold text-slate-500 whitespace-nowrap"
+            className="flex items-center gap-1.5 text-sm font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-500 whitespace-nowrap"
           >
             <span className="text-lg">{lang.flag}</span>
             {lang.name}
@@ -152,7 +154,7 @@ function Reveal({
 }
 
 export function LandingPage() {
-  const { navigate } = useUiStore();
+  const { navigate, theme, toggleTheme } = useUiStore();
   const [scrolled, setScrolled] = React.useState(false);
 
   React.useEffect(() => {
@@ -162,7 +164,7 @@ export function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white flex flex-col font-sans overflow-x-hidden">
       {/* Header */}
       <motion.header
         initial={{ y: -20, opacity: 0 }}
@@ -180,17 +182,26 @@ export function LandingPage() {
           >
             <Globe2 className="h-5 w-5 text-amber-300" />
           </motion.div>
-          <span className="font-heading font-bold text-lg text-slate-900 tracking-tight">
+          <span className="font-heading font-bold text-lg text-slate-900 dark:text-white tracking-tight">
             LinguaConnect
           </span>
         </div>
 
         <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="rounded-xl p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {theme === 'dark' ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
+          </button>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate('login')}
-            className="font-semibold text-slate-600 hover:text-slate-900 rounded-xl"
+            className="font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-xl"
           >
             Sign in
           </Button>
@@ -237,7 +248,7 @@ export function LandingPage() {
               animate={{ y: [0, -14, 0] }}
               transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: pos.delay }}
             >
-              <div className="rounded-full ring-4 ring-white shadow-lg">
+              <div className="rounded-full ring-4 ring-white dark:ring-slate-900 shadow-lg">
                 <Avatar src={SOCIAL_FACES[i]} fallback="U" size="lg" isOnline={i % 2 === 0} />
               </div>
             </motion.div>
@@ -260,7 +271,7 @@ export function LandingPage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 leading-[1.1]"
+              className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.1]"
             >
               Learn a language by{' '}
               <RotatingWord words={HERO_WORDS} /> with real people.
@@ -270,7 +281,7 @@ export function LandingPage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-xl"
+              className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl"
             >
               Match with people who speak what you're learning — and want to
               learn what you speak. No textbooks, no forced lessons, just
@@ -320,17 +331,17 @@ export function LandingPage() {
                     key={i}
                     src={src}
                     alt=""
-                    className="h-8 w-8 rounded-full ring-2 ring-slate-50 object-cover"
+                    className="h-8 w-8 rounded-full ring-2 ring-slate-50 dark:ring-slate-900 object-cover"
                   />
                 ))}
               </div>
-              <p className="text-xs text-slate-500 font-medium">
+              <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500 font-medium">
                 <span className="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1.5 align-middle animate-pulse" />
                 <Counter value={2400} suffix="+" /> people online right now
               </p>
             </motion.div>
 
-            <div className="pt-1 flex flex-wrap gap-x-6 gap-y-2 text-xs text-slate-500 font-medium">
+            <div className="pt-1 flex flex-wrap gap-x-6 gap-y-2 text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500 font-medium">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                 <span>Verified profiles</span>
@@ -358,24 +369,24 @@ export function LandingPage() {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 1 }}
-              className="hidden sm:flex absolute -left-8 top-10 z-20 items-center gap-2.5 bg-white rounded-2xl shadow-xl border border-slate-100 px-4 py-3"
+              className="hidden sm:flex absolute -left-8 top-10 z-20 items-center gap-2.5 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 px-4 py-3"
             >
               <div className="h-9 w-9 rounded-xl bg-slate-900 flex items-center justify-center text-white shrink-0">
                 <Flame className="h-4 w-4 text-amber-400" />
               </div>
               <div>
-                <p className="font-heading font-bold text-sm text-slate-900 leading-none">12 days</p>
-                <p className="text-[10px] text-slate-400 mt-0.5">avg. learner streak</p>
+                <p className="font-heading font-bold text-sm text-slate-900 dark:text-white leading-none">12 days</p>
+                <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">avg. learner streak</p>
               </div>
             </motion.div>
 
-            <div className="relative mx-auto max-w-md rounded-3xl border border-slate-200/80 bg-white p-6 space-y-5 shadow-2xl shadow-indigo-500/10">
-              <div className="flex items-center justify-between pb-3.5 border-b border-slate-100">
+            <div className="relative mx-auto max-w-md rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 p-6 space-y-5 shadow-2xl shadow-indigo-500/10">
+              <div className="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-3">
                   <Avatar src={SOCIAL_FACES[3]} fallback="M" size="md" isOnline={true} />
                   <div>
-                    <h4 className="font-heading font-bold text-sm text-slate-900">Maria Valle</h4>
-                    <p className="text-xs text-slate-500">Madrid, Spain</p>
+                    <h4 className="font-heading font-bold text-sm text-slate-900 dark:text-white">Maria Valle</h4>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">Madrid, Spain</p>
                   </div>
                 </div>
                 <motion.div
@@ -395,7 +406,7 @@ export function LandingPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.8, duration: 0.4 }}
-                  className="rounded-2xl rounded-tl-xs bg-slate-100 p-3.5 text-xs text-slate-800 border border-slate-200/60"
+                  className="rounded-2xl rounded-tl-xs bg-slate-100 dark:bg-slate-800 p-3.5 text-xs text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800/60"
                 >
                   <p className="font-bold text-[10px] text-amber-700 uppercase tracking-wider mb-1">
                     Maria 🇪🇸
@@ -450,7 +461,7 @@ export function LandingPage() {
       <LanguageMarquee />
 
       {/* Live Stats */}
-      <section className="py-14 px-4 sm:px-6 bg-white border-b border-slate-200/80">
+      <section className="py-14 px-4 sm:px-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800/80">
         <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
           {[
             { value: 48000, suffix: '+', label: 'People learning' },
@@ -462,21 +473,21 @@ export function LandingPage() {
               <p className="font-heading text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
                 <Counter value={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="text-xs font-semibold text-slate-500 mt-1">{stat.label}</p>
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 dark:text-slate-500 mt-1">{stat.label}</p>
             </Reveal>
           ))}
         </div>
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="py-20 bg-white border-b border-slate-200/80 px-4 sm:px-6">
+      <section id="how-it-works" className="py-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800/80 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <Reveal className="text-center max-w-xl mx-auto mb-12">
             <Badge variant="blue" className="mb-2">It's easy</Badge>
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
               Four steps. Zero awkwardness.
             </h2>
-            <p className="text-slate-500 text-sm mt-2">
+            <p className="text-slate-500 dark:text-slate-400 dark:text-slate-500 text-sm mt-2">
               Set up your profile once, then just start talking.
             </p>
           </Reveal>
@@ -489,14 +500,14 @@ export function LandingPage() {
               { n: '04', title: 'Keep the streak', body: 'Chat daily, level up your fluency, and actually make a friend.' },
             ].map((step, i) => (
               <Reveal key={step.n} delay={i * 0.1}>
-                <Card className="p-6 h-full text-left border border-slate-200/80 rounded-2xl bg-slate-50/50 hover:bg-white hover:border-indigo-200 hover:-translate-y-1 transition-all duration-300 shadow-xs hover:shadow-md">
+                <Card className="p-6 h-full text-left border border-slate-200 dark:border-slate-800/80 rounded-2xl bg-slate-50 dark:bg-slate-950/50 hover:bg-white dark:hover:bg-slate-800/60 hover:border-indigo-200 hover:-translate-y-1 transition-all duration-300 shadow-xs hover:shadow-md">
                   <div className="h-10 w-10 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white flex items-center justify-center font-bold mb-4 font-heading text-sm shadow-sm">
                     {step.n}
                   </div>
-                  <h3 className="font-heading font-bold text-base text-slate-900 mb-1.5">
+                  <h3 className="font-heading font-bold text-base text-slate-900 dark:text-white mb-1.5">
                     {step.title}
                   </h3>
-                  <p className="text-xs text-slate-500 leading-relaxed">{step.body}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500 leading-relaxed">{step.body}</p>
                 </Card>
               </Reveal>
             ))}
@@ -507,15 +518,15 @@ export function LandingPage() {
       {/* Supported Languages — minimal grayscale grid, colorizes on hover */}
       <section className="py-16 px-4 sm:px-6 max-w-6xl mx-auto w-full">
         <Reveal className="text-center max-w-md mx-auto mb-10">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-2">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
             Practiced in over 12 languages
           </p>
-          <h2 className="font-heading text-3xl font-bold text-slate-900 tracking-tight">
+          <h2 className="font-heading text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
             Pick your language
           </h2>
         </Reveal>
 
-        <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 border-t border-l border-slate-100">
+        <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 border-t border-l border-slate-100 dark:border-slate-800">
           {LANGUAGES.map((lang, i) => (
             <motion.div
               key={lang.id}
@@ -524,12 +535,12 @@ export function LandingPage() {
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.3, delay: (i % 7) * 0.04 }}
               onClick={() => navigate('register')}
-              className="group p-5 border-r border-b border-slate-100 text-center cursor-pointer transition-colors duration-200 hover:bg-slate-50"
+              className="group p-5 border-r border-b border-slate-100 dark:border-slate-800 text-center cursor-pointer transition-colors duration-200 hover:bg-slate-50 dark:bg-slate-950"
             >
               <span className="text-2xl block mb-2 grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300">
                 {lang.flag}
               </span>
-              <p className="font-heading font-bold text-[11px] text-slate-400 group-hover:text-slate-900 transition-colors">
+              <p className="font-heading font-bold text-[11px] text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
                 {lang.name}
               </p>
             </motion.div>
@@ -538,13 +549,13 @@ export function LandingPage() {
       </section>
 
       {/* Conversation Topics */}
-      <section className="py-16 bg-white border-y border-slate-200/80 px-4 sm:px-6">
+      <section className="py-16 bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800/80 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <Reveal className="text-center max-w-md mx-auto mb-10">
-            <h2 className="font-heading text-3xl font-bold text-slate-900 tracking-tight">
+            <h2 className="font-heading text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
               Never run out of things to say
             </h2>
-            <p className="text-slate-500 text-xs mt-1">
+            <p className="text-slate-500 dark:text-slate-400 dark:text-slate-500 text-xs mt-1">
               Built-in topic starters so the first message is never the hard part.
             </p>
           </Reveal>
@@ -552,15 +563,15 @@ export function LandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {CONVERSATION_TOPICS.slice(0, 3).map((topic, i) => (
               <Reveal key={topic.id} delay={i * 0.1}>
-                <Card className="p-5 h-full bg-slate-50/60 border border-slate-200/80 rounded-2xl flex flex-col justify-between hover:shadow-md transition-all">
+                <Card className="p-5 h-full bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/80 rounded-2xl flex flex-col justify-between hover:shadow-md transition-all">
                   <div>
                     <Badge variant="blue" className="text-[10px] mb-2.5">
                       {topic.category}
                     </Badge>
-                    <h4 className="font-heading font-bold text-base text-slate-900 mb-2">
+                    <h4 className="font-heading font-bold text-base text-slate-900 dark:text-white mb-2">
                       {topic.title}
                     </h4>
-                    <p className="text-xs text-slate-600 leading-relaxed italic bg-white p-3 rounded-xl border border-slate-100">
+                    <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed italic bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
                       "{topic.prompt}"
                     </p>
                   </div>
@@ -568,7 +579,7 @@ export function LandingPage() {
                     <span className="text-[11px] font-bold text-indigo-600">
                       {topic.difficulty}
                     </span>
-                    <span className="text-xs text-slate-400 font-medium">Tap to use</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">Tap to use</span>
                   </div>
                 </Card>
               </Reveal>
@@ -580,16 +591,16 @@ export function LandingPage() {
       {/* Safety / community section */}
       <section className="py-16 px-4 sm:px-6 max-w-5xl mx-auto w-full">
         <Reveal>
-          <div className="rounded-3xl border border-slate-200/80 bg-white p-8 sm:p-10 shadow-lg">
+          <div className="rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 p-8 sm:p-10 shadow-lg">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
               <div className="md:col-span-4 text-left">
                 <div className="h-12 w-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 mb-4 border border-indigo-100">
                   <ShieldCheck className="h-6 w-6 text-indigo-600" />
                 </div>
-                <h3 className="font-heading text-2xl font-bold text-slate-900 mb-2">
+                <h3 className="font-heading text-2xl font-bold text-slate-900 dark:text-white mb-2">
                   Real connections, not weird DMs
                 </h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
+                <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500 leading-relaxed">
                   Built for genuine language exchange, with the tools to keep
                   it that way.
                 </p>
@@ -602,12 +613,12 @@ export function LandingPage() {
                   { icon: Zap, color: 'text-indigo-600', title: 'Fair exchange', body: "You teach, they teach — it's always 50/50." },
                   { icon: Lock, color: 'text-amber-500', title: 'You control your data', body: 'Your profile, your rules, delete anytime.' },
                 ].map((item) => (
-                  <div key={item.title} className="p-4 rounded-2xl bg-slate-50 border border-slate-200/60">
+                  <div key={item.title} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/60">
                     <item.icon className={cn('h-4 w-4 mb-2', item.color)} />
-                    <h4 className="font-heading font-bold text-xs text-slate-900 mb-0.5">
+                    <h4 className="font-heading font-bold text-xs text-slate-900 dark:text-white mb-0.5">
                       {item.title}
                     </h4>
-                    <p className="text-[11px] text-slate-500 leading-relaxed">{item.body}</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 dark:text-slate-500 leading-relaxed">{item.body}</p>
                   </div>
                 ))}
               </div>
@@ -651,7 +662,7 @@ export function LandingPage() {
       </section>
 
       {/* Footer — minimal, monochrome, grid-of-links style */}
-      <footer className="mt-auto bg-white border-t border-slate-100 px-4 sm:px-8 pt-14 pb-8">
+      <footer className="mt-auto bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800 px-4 sm:px-8 pt-14 pb-8">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-8 pb-10">
             <div className="col-span-2">
@@ -659,9 +670,9 @@ export function LandingPage() {
                 <div className="h-8 w-8 rounded-lg bg-slate-900 flex items-center justify-center text-white">
                   <Globe2 className="h-4 w-4" />
                 </div>
-                <span className="font-heading font-bold text-slate-900 text-base">LinguaConnect</span>
+                <span className="font-heading font-bold text-slate-900 dark:text-white text-base">LinguaConnect</span>
               </div>
-              <p className="text-xs leading-relaxed max-w-xs text-slate-500">
+              <p className="text-xs leading-relaxed max-w-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">
                 Real people, real conversations, real fluency. Made for
                 learners who'd rather chat than cram.
               </p>
@@ -671,7 +682,7 @@ export function LandingPage() {
                     key={i}
                     href="#"
                     onClick={(e) => e.preventDefault()}
-                    className="h-8 w-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:border-slate-900 hover:text-slate-900 transition-colors"
+                    className="h-8 w-8 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 hover:border-slate-900 dark:hover:border-white hover:text-slate-900 dark:hover:text-white transition-colors"
                     aria-label="Social link"
                   >
                     <Icon className="h-3.5 w-3.5" />
@@ -681,26 +692,26 @@ export function LandingPage() {
             </div>
 
             <div>
-              <h5 className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-3">Product</h5>
-              <ul className="space-y-2.5 text-xs text-slate-600">
+              <h5 className="text-slate-400 dark:text-slate-500 text-[11px] font-bold uppercase tracking-wider mb-3">Product</h5>
+              <ul className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
                 <li>
                   <button
                     onClick={() => {
                       const el = document.getElementById('how-it-works');
                       el?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="hover:text-slate-900 transition-colors cursor-pointer"
+                    className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                   >
                     How it works
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => navigate('register')} className="hover:text-slate-900 transition-colors cursor-pointer">
+                  <button onClick={() => navigate('register')} className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">
                     Get started
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => navigate('login')} className="hover:text-slate-900 transition-colors cursor-pointer">
+                  <button onClick={() => navigate('login')} className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">
                     Sign in
                   </button>
                 </li>
@@ -708,24 +719,24 @@ export function LandingPage() {
             </div>
 
             <div>
-              <h5 className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-3">Community</h5>
-              <ul className="space-y-2.5 text-xs text-slate-600">
-                <li className="hover:text-slate-900 transition-colors cursor-default">Safety Center</li>
-                <li className="hover:text-slate-900 transition-colors cursor-default">Guidelines</li>
-                <li className="hover:text-slate-900 transition-colors cursor-default">Feedback</li>
+              <h5 className="text-slate-400 dark:text-slate-500 text-[11px] font-bold uppercase tracking-wider mb-3">Community</h5>
+              <ul className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+                <li className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-default">Safety Center</li>
+                <li className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-default">Guidelines</li>
+                <li className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-default">Feedback</li>
               </ul>
             </div>
 
             <div>
-              <h5 className="text-slate-400 text-[11px] font-bold uppercase tracking-wider mb-3">Legal</h5>
-              <ul className="space-y-2.5 text-xs text-slate-600">
-                <li className="hover:text-slate-900 transition-colors cursor-default">Privacy Policy</li>
-                <li className="hover:text-slate-900 transition-colors cursor-default">Terms of Service</li>
+              <h5 className="text-slate-400 dark:text-slate-500 text-[11px] font-bold uppercase tracking-wider mb-3">Legal</h5>
+              <ul className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+                <li className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-default">Privacy Policy</li>
+                <li className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-default">Terms of Service</li>
               </ul>
             </div>
           </div>
 
-          <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-400">
+          <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-400 dark:text-slate-500">
             <span>© {new Date().getFullYear()} LinguaConnect. Made for language learners, everywhere.</span>
             <span className="flex items-center gap-1.5">
               <span className="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
